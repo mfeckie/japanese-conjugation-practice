@@ -9,97 +9,34 @@
           Japanese Form Practice
         </h1>
 
-        <!-- Conjugation Type Selector -->
-        <div class="mb-6">
-          <div class="inline-flex bg-gray-200 rounded-lg p-1 flex-wrap gap-1">
-            <button
-              @click="gameState.currentConjugationType = 'te-form'"
-              :class="[
-                'px-4 py-2 rounded-md font-medium transition-colors',
-                gameState.currentConjugationType === 'te-form'
-                  ? 'bg-blue-600 text-white shadow'
-                  : 'text-gray-700 hover:bg-gray-300',
-              ]"
+        <!-- Conjugation Type Selector (Grouped) -->
+        <div class="mb-6 space-y-3 text-left">
+          <div
+            v-for="group in buttonGroups"
+            :key="group.label"
+            class="bg-gray-200 rounded-lg p-2"
+          >
+            <div
+              class="text-xs font-semibold uppercase tracking-wide text-gray-600 px-1 mb-2"
             >
-              て-form
-            </button>
-            <button
-              @click="gameState.currentConjugationType = 'negative'"
-              :class="[
-                'px-4 py-2 rounded-md font-medium transition-colors',
-                gameState.currentConjugationType === 'negative'
-                  ? 'bg-red-600 text-white shadow'
-                  : 'text-gray-700 hover:bg-gray-300',
-              ]"
-            >
-              Negative form (～ない)
-            </button>
-            <button
-              @click="gameState.currentConjugationType = 'past'"
-              :class="[
-                'px-4 py-2 rounded-md font-medium transition-colors',
-                gameState.currentConjugationType === 'past'
-                  ? 'bg-purple-600 text-white shadow'
-                  : 'text-gray-700 hover:bg-gray-300',
-              ]"
-            >
-              Past tense (～た)
-            </button>
-            <button
-              @click="gameState.currentConjugationType = 'polite'"
-              :class="[
-                'px-4 py-2 rounded-md font-medium transition-colors',
-                gameState.currentConjugationType === 'polite'
-                  ? 'bg-teal-600 text-white shadow'
-                  : 'text-gray-700 hover:bg-gray-300',
-              ]"
-            >
-              Polite (ます)
-            </button>
-            <button
-              @click="gameState.currentConjugationType = 'past-polite'"
-              :class="[
-                'px-4 py-2 rounded-md font-medium transition-colors',
-                gameState.currentConjugationType === 'past-polite'
-                  ? 'bg-indigo-700 text-white shadow'
-                  : 'text-gray-700 hover:bg-gray-300',
-              ]"
-            >
-              Past polite (ました)
-            </button>
-            <button
-              @click="gameState.currentConjugationType = 'polite-negative'"
-              :class="[
-                'px-4 py-2 rounded-md font-medium transition-colors',
-                gameState.currentConjugationType === 'polite-negative'
-                  ? 'bg-rose-600 text-white shadow'
-                  : 'text-gray-700 hover:bg-gray-300',
-              ]"
-            >
-              Polite negative (ません)
-            </button>
-            <button
-              @click="gameState.currentConjugationType = 'past-polite-negative'"
-              :class="[
-                'px-4 py-2 rounded-md font-medium transition-colors',
-                gameState.currentConjugationType === 'past-polite-negative'
-                  ? 'bg-rose-800 text-white shadow'
-                  : 'text-gray-700 hover:bg-gray-300',
-              ]"
-            >
-              Past polite negative (ませんでした)
-            </button>
-            <button
-              @click="gameState.currentConjugationType = 'past-negative'"
-              :class="[
-                'px-4 py-2 rounded-md font-medium transition-colors',
-                gameState.currentConjugationType === 'past-negative'
-                  ? 'bg-orange-700 text-white shadow'
-                  : 'text-gray-700 hover:bg-gray-300',
-              ]"
-            >
-              Past negative (なかった)
-            </button>
+              {{ group.label }}
+            </div>
+            <div class="flex flex-wrap gap-1">
+              <button
+                v-for="btn in group.items"
+                :key="btn.type"
+                @click="gameState.currentConjugationType = btn.type"
+                :aria-pressed="gameState.currentConjugationType === btn.type"
+                :class="[
+                  'px-3 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500',
+                  gameState.currentConjugationType === btn.type
+                    ? btn.activeClass
+                    : 'bg-white text-gray-700 hover:bg-gray-300',
+                ]"
+              >
+                {{ btn.label }}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -435,6 +372,70 @@ const gameState = reactive<GameState>({
   totalAttempts: 0,
   correctAnswers: 0,
 })
+
+// Grouped button configuration (ordered logically: Plain, Plain Past, Plain Negative, Plain Past Negative, Polite, Polite Past, Polite Negative, Polite Past Negative)
+interface ButtonConfig {
+  type: any
+  label: string
+  activeClass: string
+}
+interface ButtonGroup {
+  label: string
+  items: ButtonConfig[]
+}
+
+const buttonGroups: ButtonGroup[] = [
+  {
+    label: "Plain",
+    items: [
+      {
+        type: "te-form",
+        label: "て-form",
+        activeClass: "bg-blue-600 text-white shadow",
+      },
+      {
+        type: "past",
+        label: "Past (～た)",
+        activeClass: "bg-purple-600 text-white shadow",
+      },
+      {
+        type: "negative",
+        label: "Negative (～ない)",
+        activeClass: "bg-red-600 text-white shadow",
+      },
+      {
+        type: "past-negative",
+        label: "Past Negative (～なかった)",
+        activeClass: "bg-orange-700 text-white shadow",
+      },
+    ],
+  },
+  {
+    label: "Polite",
+    items: [
+      {
+        type: "polite",
+        label: "Polite (～ます)",
+        activeClass: "bg-teal-600 text-white shadow",
+      },
+      {
+        type: "past-polite",
+        label: "Past Polite (～ました)",
+        activeClass: "bg-indigo-700 text-white shadow",
+      },
+      {
+        type: "polite-negative",
+        label: "Polite Negative (～ません)",
+        activeClass: "bg-rose-600 text-white shadow",
+      },
+      {
+        type: "past-polite-negative",
+        label: "Past Polite Neg (～ませんでした)",
+        activeClass: "bg-rose-800 text-white shadow",
+      },
+    ],
+  },
+]
 
 function nextVerb() {
   gameState.currentVerb = getRandomVerb()
