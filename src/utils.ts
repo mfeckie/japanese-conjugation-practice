@@ -75,7 +75,7 @@ export function getTransformationHint(verb: Verb): TransformationHint {
         step2: `2. Remove る from ${hiragana}`,
         step3: `3. Add て to get ${teForm}`,
         rule: "Ichidan Rule: Remove る and add て",
-        example: `${hiragana} → ${hiragana.slice(0, -1)}て = ${teForm}`
+        example: `${hiragana} → ${hiragana.slice(0, -1)}て = ${teForm}`,
       }
 
     case "irregular":
@@ -84,35 +84,35 @@ export function getTransformationHint(verb: Verb): TransformationHint {
           step1: `1. Identify: ${hiragana} is an irregular verb`,
           step2: `2. Special transformation: する → して`,
           rule: "Irregular Rule: する becomes して",
-          example: `${hiragana} → ${teForm}`
+          example: `${hiragana} → ${teForm}`,
         }
       } else if (hiragana === "くる") {
         return {
           step1: `1. Identify: ${hiragana} is an irregular verb`,
           step2: `2. Special transformation: くる → きて`,
           rule: "Irregular Rule: くる becomes きて",
-          example: `${hiragana} → ${teForm}`
+          example: `${hiragana} → ${teForm}`,
         }
       } else if (hiragana === "いく") {
         return {
           step1: `1. Identify: ${hiragana} is an irregular verb`,
           step2: `2. Special transformation: いく → いって`,
           rule: "Irregular Rule: いく becomes いって (special case)",
-          example: `${hiragana} → ${teForm}`
+          example: `${hiragana} → ${teForm}`,
         }
       } else if (hiragana.endsWith("する")) {
         return {
           step1: `1. Identify: ${hiragana} is a compound verb with する`,
           step2: `2. Change する to して`,
           rule: "Compound Rule: Replace する with して",
-          example: `${hiragana} → ${hiragana.slice(0, -2)}して = ${teForm}`
+          example: `${hiragana} → ${hiragana.slice(0, -2)}して = ${teForm}`,
         }
       } else {
         return {
           step1: `1. Identify: ${hiragana} is an irregular verb`,
           step2: `2. Special form: ${teForm}`,
           rule: "Irregular Rule: Must be memorized",
-          example: `${hiragana} → ${teForm}`
+          example: `${hiragana} → ${teForm}`,
         }
       }
 
@@ -124,87 +124,87 @@ export function getTransformationHint(verb: Verb): TransformationHint {
             step2: `2. Change む to ん`,
             step3: `3. Add で to get ${teForm}`,
             rule: "む → んで rule (sound convenience: /m/ + て → んで)",
-            example: `${hiragana} → ${hiragana.slice(0, -1)}んで = ${teForm}`
+            example: `${hiragana} → ${hiragana.slice(0, -1)}んで = ${teForm}`,
           }
-        
+
         case "bu":
           return {
             step1: `1. Identify: ${hiragana} ends in ぶ (godan verb)`,
             step2: `2. Change ぶ to ん`,
             step3: `3. Add で to get ${teForm}`,
             rule: "ぶ → んで rule (sound convenience: /b/ + て → んで)",
-            example: `${hiragana} → ${hiragana.slice(0, -1)}んで = ${teForm}`
+            example: `${hiragana} → ${hiragana.slice(0, -1)}んで = ${teForm}`,
           }
-        
+
         case "nu":
           return {
             step1: `1. Identify: ${hiragana} ends in ぬ (godan verb)`,
             step2: `2. Change ぬ to ん`,
             step3: `3. Add で to get ${teForm}`,
             rule: "ぬ → んで rule (sound convenience: /n/ + て → んで)",
-            example: `${hiragana} → ${hiragana.slice(0, -1)}んで = ${teForm}`
+            example: `${hiragana} → ${hiragana.slice(0, -1)}んで = ${teForm}`,
           }
-        
+
         case "ku":
           return {
             step1: `1. Identify: ${hiragana} ends in く (godan verb)`,
             step2: `2. Change く to い`,
             step3: `3. Add て to get ${teForm}`,
             rule: "く → いて rule (consonant removal: /k/ → /i/ + て)",
-            example: `${hiragana} → ${hiragana.slice(0, -1)}いて = ${teForm}`
+            example: `${hiragana} → ${hiragana.slice(0, -1)}いて = ${teForm}`,
           }
-        
+
         case "gu":
           return {
             step1: `1. Identify: ${hiragana} ends in ぐ (godan verb)`,
             step2: `2. Change ぐ to い`,
             step3: `3. Add で to get ${teForm}`,
             rule: "ぐ → いで rule (consonant removal: /g/ → /i/ + で)",
-            example: `${hiragana} → ${hiragana.slice(0, -1)}いで = ${teForm}`
+            example: `${hiragana} → ${hiragana.slice(0, -1)}いで = ${teForm}`,
           }
-        
+
         case "su":
           return {
             step1: `1. Identify: ${hiragana} ends in す (godan verb)`,
             step2: `2. Change す to し`,
             step3: `3. Add て to get ${teForm}`,
             rule: "す → して rule (direct substitution)",
-            example: `${hiragana} → ${hiragana.slice(0, -1)}して = ${teForm}`
+            example: `${hiragana} → ${hiragana.slice(0, -1)}して = ${teForm}`,
           }
-        
+
         case "tsu":
           return {
             step1: `1. Identify: ${hiragana} ends in つ (godan verb)`,
             step2: `2. Change つ to っ`,
             step3: `3. Add て to get ${teForm}`,
             rule: "つ → って rule (double consonant: /t/ + て → って)",
-            example: `${hiragana} → ${hiragana.slice(0, -1)}って = ${teForm}`
+            example: `${hiragana} → ${hiragana.slice(0, -1)}って = ${teForm}`,
           }
-        
+
         case "u":
           return {
             step1: `1. Identify: ${hiragana} ends in う (godan verb)`,
             step2: `2. Change う to っ`,
             step3: `3. Add て to get ${teForm}`,
             rule: "う → って rule (historical /w/ sound + て → って)",
-            example: `${hiragana} → ${hiragana.slice(0, -1)}って = ${teForm}`
+            example: `${hiragana} → ${hiragana.slice(0, -1)}って = ${teForm}`,
           }
-        
+
         case "ru":
           return {
             step1: `1. Identify: ${hiragana} ends in る (godan verb - NOT ichidan!)`,
             step2: `2. Change る to っ`,
             step3: `3. Add て to get ${teForm}`,
             rule: "Godan る → って rule (different from ichidan verbs)",
-            example: `${hiragana} → ${hiragana.slice(0, -1)}って = ${teForm}`
+            example: `${hiragana} → ${hiragana.slice(0, -1)}って = ${teForm}`,
           }
-        
+
         default:
           return {
             step1: `1. Identify: ${hiragana} is a godan verb`,
             step2: `2. Apply godan conjugation pattern`,
             rule: "Godan Rule: Follow specific ending patterns",
-            example: `${hiragana} → ${teForm}`
+            example: `${hiragana} → ${teForm}`,
           }
       }
 
@@ -213,7 +213,7 @@ export function getTransformationHint(verb: Verb): TransformationHint {
         step1: `1. Analyze the verb: ${hiragana}`,
         step2: `2. Apply appropriate rule`,
         rule: "General conjugation rule",
-        example: `${hiragana} → ${teForm}`
+        example: `${hiragana} → ${teForm}`,
       }
   }
 }

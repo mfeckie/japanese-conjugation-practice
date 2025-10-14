@@ -1,21 +1,21 @@
 export type VerbType = "ichidan" | "godan" | "irregular"
 
 export interface Verb {
-  kanji: string;
-  hiragana: string;
-  romaji: string;
-  type: VerbType;
-  teForm: string;
-  meaning: string;
-  endingGroup?: string; // For godan verbs (u, ku, gu, su, tsu, nu, bu, mu, ru)
+  kanji: string
+  hiragana: string
+  romaji: string
+  type: VerbType
+  teForm: string
+  meaning: string
+  endingGroup?: string // For godan verbs (u, ku, gu, su, tsu, nu, bu, mu, ru)
 }
 
 export interface TransformationHint {
-  step1: string;
-  step2: string;
-  step3?: string;
-  rule: string;
-  example: string;
+  step1: string
+  step2: string
+  step3?: string
+  rule: string
+  example: string
 }
 
 export interface ConjugationRule {
@@ -25,14 +25,14 @@ export interface ConjugationRule {
 }
 
 export interface GameState {
-  currentVerb: Verb | null;
-  userAnswer: string;
-  isCorrect: boolean | null;
-  showExplanation: boolean;
-  showHint: boolean;
-  score: number;
-  totalAttempts: number;
-  correctAnswers: number;
+  currentVerb: Verb | null
+  userAnswer: string
+  isCorrect: boolean | null
+  showExplanation: boolean
+  showHint: boolean
+  score: number
+  totalAttempts: number
+  correctAnswers: number
 }
 
 export interface TeFormRules {

@@ -73,30 +73,58 @@
                 @click="gameState.showHint = !gameState.showHint"
                 class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors mb-4"
               >
-                {{ gameState.showHint ? 'Hide' : 'Show' }} Hint 💡
+                {{ gameState.showHint ? "Hide" : "Show" }} Hint 💡
               </button>
-              
-              <div v-if="gameState.showHint && gameState.currentVerb" 
-                   class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg text-left max-w-2xl mx-auto">
-                <h4 class="font-semibold text-yellow-800 mb-3">Step-by-Step Transformation:</h4>
+
+              <div
+                v-if="gameState.showHint && gameState.currentVerb"
+                class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg text-left max-w-2xl mx-auto"
+              >
+                <h4 class="font-semibold text-yellow-800 mb-3">
+                  Step-by-Step Transformation:
+                </h4>
                 <div class="space-y-2 text-yellow-700">
                   <div class="flex items-start">
-                    <span class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3">{{ getTransformationHint(gameState.currentVerb).step1 }}</span>
+                    <span
+                      class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3"
+                      >{{
+                        getTransformationHint(gameState.currentVerb).step1
+                      }}</span
+                    >
                   </div>
                   <div class="flex items-start">
-                    <span class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3">{{ getTransformationHint(gameState.currentVerb).step2 }}</span>
+                    <span
+                      class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3"
+                      >{{
+                        getTransformationHint(gameState.currentVerb).step2
+                      }}</span
+                    >
                   </div>
-                  <div v-if="getTransformationHint(gameState.currentVerb).step3" class="flex items-start">
-                    <span class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3">{{ getTransformationHint(gameState.currentVerb).step3 }}</span>
+                  <div
+                    v-if="getTransformationHint(gameState.currentVerb).step3"
+                    class="flex items-start"
+                  >
+                    <span
+                      class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3"
+                      >{{
+                        getTransformationHint(gameState.currentVerb).step3
+                      }}</span
+                    >
                   </div>
                 </div>
                 <div class="mt-4 p-3 bg-yellow-100 rounded">
                   <div class="font-semibold text-yellow-800 text-sm">Rule:</div>
-                  <div class="text-yellow-700 text-sm">{{ getTransformationHint(gameState.currentVerb).rule }}</div>
+                  <div class="text-yellow-700 text-sm">
+                    {{ getTransformationHint(gameState.currentVerb).rule }}
+                  </div>
                 </div>
                 <div class="mt-2 p-3 bg-yellow-100 rounded">
-                  <div class="font-semibold text-yellow-800 text-sm">Example:</div>
-                  <div class="text-yellow-700 text-sm japanese-font">{{ getTransformationHint(gameState.currentVerb).example }}</div>
+                  <div class="font-semibold text-yellow-800 text-sm">
+                    Example:
+                  </div>
+                  <div class="text-yellow-700 text-sm japanese-font">
+                    {{ getTransformationHint(gameState.currentVerb).example }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -118,7 +146,6 @@
                   'border-green-500 bg-green-50': gameState.isCorrect === true,
                   'border-red-500 bg-red-50': gameState.isCorrect === false,
                 }"
-                placeholder="Type romaji (e.g., 'tabete')..."
               />
 
               <!-- Check Answer Button -->
