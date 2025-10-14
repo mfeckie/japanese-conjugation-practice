@@ -1,5 +1,10 @@
 export type VerbType = "ichidan" | "godan" | "irregular"
-export type ConjugationType = "te-form" | "negative" | "past" | "polite"
+export type ConjugationType =
+  | "te-form"
+  | "negative"
+  | "past"
+  | "polite"
+  | "past-polite"
 
 export interface Verb {
   kanji: string
