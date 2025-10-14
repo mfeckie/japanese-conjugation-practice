@@ -45,6 +45,17 @@
             >
               Past tense
             </button>
+            <button
+              @click="gameState.currentConjugationType = 'polite'"
+              :class="[
+                'px-4 py-2 rounded-md font-medium transition-colors',
+                gameState.currentConjugationType === 'polite'
+                  ? 'bg-teal-600 text-white shadow'
+                  : 'text-gray-700 hover:bg-gray-300',
+              ]"
+            >
+              Polite (ます)
+            </button>
           </div>
         </div>
 
@@ -110,7 +121,9 @@
                   ? "て-form (te-form)"
                   : gameState.currentConjugationType === "negative"
                   ? "negative form"
-                  : "past tense"
+                  : gameState.currentConjugationType === "past"
+                  ? "past tense"
+                  : "polite form (～ます)"
               }}:
             </h2>
 
