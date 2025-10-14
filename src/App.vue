@@ -78,6 +78,17 @@
             >
               Polite negative (ません)
             </button>
+            <button
+              @click="gameState.currentConjugationType = 'past-polite-negative'"
+              :class="[
+                'px-4 py-2 rounded-md font-medium transition-colors',
+                gameState.currentConjugationType === 'past-polite-negative'
+                  ? 'bg-rose-800 text-white shadow'
+                  : 'text-gray-700 hover:bg-gray-300',
+              ]"
+            >
+              Past polite negative (ませんでした)
+            </button>
           </div>
         </div>
 
@@ -149,7 +160,9 @@
                   ? "polite form (～ます)"
                   : gameState.currentConjugationType === "past-polite"
                   ? "past polite form (～ました)"
-                  : "polite negative form (～ません)"
+                  : gameState.currentConjugationType === "polite-negative"
+                  ? "polite negative form (～ません)"
+                  : "past polite negative form (～ませんでした)"
               }}:
             </h2>
 

@@ -6,6 +6,7 @@ export type ConjugationType =
   | "polite"
   | "past-polite"
   | "polite-negative"
+  | "past-polite-negative"
 
 export interface Verb {
   kanji: string
