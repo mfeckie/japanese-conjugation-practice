@@ -528,6 +528,8 @@ watch(
 )
 
 onMounted(() => {
+  // Ensure browser tab title matches application title
+  document.title = "Japanese Form Practice"
   nextVerb()
 
   // Setup wanakana for hiragana input
