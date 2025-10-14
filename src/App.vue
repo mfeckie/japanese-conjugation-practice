@@ -198,32 +198,6 @@
           <div class="text-xl text-gray-600">Loading next verb...</div>
         </div>
       </div>
-
-      <!-- Info Section -->
-      <div class="bg-white rounded-xl shadow-lg p-6">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">
-          About Te-Form (て-form)
-        </h3>
-        <div class="grid md:grid-cols-3 gap-6 text-sm">
-          <div class="bg-blue-50 p-4 rounded-lg">
-            <h4 class="font-semibold text-blue-800 mb-2">Ichidan Verbs</h4>
-            <p class="text-blue-700">Simply replace る with て</p>
-            <p class="text-blue-600 text-xs mt-1">Example: 食べる → 食べて</p>
-          </div>
-
-          <div class="bg-green-50 p-4 rounded-lg">
-            <h4 class="font-semibold text-green-800 mb-2">Godan Verbs</h4>
-            <p class="text-green-700">Follow specific ending patterns</p>
-            <p class="text-green-600 text-xs mt-1">Example: 読む → 読んで</p>
-          </div>
-
-          <div class="bg-red-50 p-4 rounded-lg">
-            <h4 class="font-semibold text-red-800 mb-2">Irregular Verbs</h4>
-            <p class="text-red-700">Must be memorized individually</p>
-            <p class="text-red-600 text-xs mt-1">Example: する → して</p>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
