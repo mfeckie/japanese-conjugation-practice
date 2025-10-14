@@ -69,16 +69,24 @@
             <!-- Answer Input -->
             <div class="max-w-md mx-auto">
               <input
-                v-model="gameState.userAnswer"
+                ref="inputRef"
+                :value="gameState.userAnswer"
                 @keyup.enter="checkUserAnswer"
-                @input="clearResults"
+                @input="filterHiraganaInput"
+                @keydown="preventIMEConversion"
                 type="text"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                inputmode="none"
+                lang="en"
                 class="w-full text-2xl text-center p-4 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none japanese-font"
                 :class="{
                   'border-green-500 bg-green-50': gameState.isCorrect === true,
                   'border-red-500 bg-red-50': gameState.isCorrect === false,
                 }"
-                placeholder="Enter て-form here..."
+                placeholder="Type romaji (e.g., 'tabete')..."
                 :disabled="gameState.isCorrect === true"
               />
 
@@ -221,7 +229,8 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted } from "vue"
+import { reactive, onMounted, ref, nextTick } from "vue"
+import * as wanakana from "wanakana"
 import type { GameState } from "./types"
 import { verbs } from "./data"
 import {
@@ -231,6 +240,8 @@ import {
   getVerbTypeColor,
   getVerbTypeDescription,
 } from "./utils"
+
+const inputRef = ref<HTMLInputElement | null>(null)
 
 const gameState = reactive<GameState>({
   currentVerb: null,
@@ -247,12 +258,45 @@ function nextVerb() {
   gameState.userAnswer = ""
   gameState.isCorrect = null
   gameState.showExplanation = false
+
+  // Focus the input for the next question
+  nextTick(() => {
+    if (inputRef.value) {
+      inputRef.value.focus()
+    }
+  })
 }
 
 function clearResults() {
   if (gameState.isCorrect !== null) {
     gameState.isCorrect = null
     gameState.showExplanation = false
+  }
+}
+
+function filterHiraganaInput(event: Event) {
+  const target = event.target as HTMLInputElement
+  const currentValue = target.value
+
+  // Convert romaji to hiragana
+  const hiraganaValue = wanakana.toHiragana(currentValue)
+
+  // Update the game state
+  gameState.userAnswer = hiraganaValue
+
+  // Update the input field if conversion happened
+  if (hiraganaValue !== currentValue) {
+    target.value = hiraganaValue
+  }
+
+  // Clear results when user starts typing again
+  clearResults()
+}
+
+function preventIMEConversion(event: KeyboardEvent) {
+  // Prevent space key and other keys from triggering IME conversion
+  if (event.code === "Space" || event.key === "Process") {
+    event.preventDefault()
   }
 }
 
@@ -271,8 +315,17 @@ function checkUserAnswer() {
   }
 }
 
+// Remove the watch function that was interfering with romaji input
+
 onMounted(() => {
   nextVerb()
+
+  // Focus the input field
+  nextTick(() => {
+    if (inputRef.value) {
+      inputRef.value.focus()
+    }
+  })
 })
 </script>
 
