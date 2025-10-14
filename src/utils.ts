@@ -29,6 +29,8 @@ export function getCorrectAnswer(
       return derivePoliteNegativeForm(verb)
     case "past-polite-negative":
       return derivePastPoliteNegativeForm(verb)
+    case "past-negative":
+      return derivePastNegativeForm(verb)
     default:
       return ""
   }
@@ -109,6 +111,7 @@ export function getTransformationHint(
     return getPoliteNegativeFormHint(verb)
   if (conjugationType === "past-polite-negative")
     return getPastPoliteNegativeFormHint(verb)
+  if (conjugationType === "past-negative") return getPastNegativeFormHint(verb)
   return {
     step1: "Unsupported conjugation type",
     step2: "",
@@ -176,6 +179,43 @@ function derivePastPoliteNegativeForm(verb: Verb): string {
   // We can build from polite negative: ません → ませんでした
   const neg = derivePoliteNegativeForm(verb)
   return neg.endsWith("ません") ? neg + "でした" : neg + "でした"
+}
+
+// Plain past negative (〜なかった)
+function derivePastNegativeForm(verb: Verb): string {
+  // Build from dictionary negative form if available, else attempt to construct
+  let neg = verb.negativeForm
+  if (!neg) {
+    // Attempt on-the-fly: ichidan remove る add ない; godan approximate by replacing final syllable with its あ-row + ない
+    const { hiragana, type } = verb
+    if (type === "ichidan" && hiragana.endsWith("る")) {
+      neg = hiragana.slice(0, -1) + "ない"
+    } else if (type === "irregular") {
+      if (hiragana === "する") neg = "しない"
+      else if (hiragana === "くる") neg = "こない"
+      else if (hiragana === "いく") neg = "いかない"
+      else if (hiragana === "ある") neg = "ない"
+      else if (hiragana.endsWith("する")) neg = hiragana.slice(0, -2) + "しない"
+    } else if (type === "godan") {
+      const h = verb.hiragana
+      const end = h.slice(-1)
+      const stem = h.slice(0, -1)
+      const aMap: Record<string, string> = {
+        う: "わ",
+        く: "か",
+        ぐ: "が",
+        す: "さ",
+        つ: "た",
+        ぬ: "な",
+        ぶ: "ば",
+        む: "ま",
+        る: "ら",
+      }
+      neg = stem + (aMap[end] || "") + "ない"
+    }
+  }
+  if (!neg) return "" // fallback
+  return neg.endsWith("ない") ? neg.slice(0, -2) + "なかった" : neg + "なかった"
 }
 
 function getPoliteFormHint(verb: Verb): TransformationHint {
@@ -296,6 +336,44 @@ function getPoliteNegativeFormHint(verb: Verb): TransformationHint {
     step3: `3. Result: ${politeNeg}`,
     rule: "Polite negative: ます → ません",
     example: `${polite} → ${politeNeg}`,
+  }
+}
+
+function getPastNegativeFormHint(verb: Verb): TransformationHint {
+  const { hiragana, type } = verb
+  const neg =
+    verb.negativeForm ||
+    derivePastNegativeForm({ ...verb, negativeForm: undefined })
+  const pastNeg = derivePastNegativeForm(verb)
+  if (!neg || !pastNeg) {
+    return {
+      step1: `1. Form negative not available for ${hiragana}`,
+      step2: `2. Cannot derive past negative`,
+      rule: "Missing negative base",
+      example: hiragana,
+    }
+  }
+
+  let step1 = "1. Form the plain negative"
+  let step2 = "2. Replace ない with なかった"
+  let rule = "Past negative: ない → なかった"
+  let example = `${neg} → ${pastNeg}`
+
+  if (type === "ichidan" && hiragana.endsWith("る")) {
+    step1 = `1. Ichidan: remove る add ない → ${hiragana.slice(0, -1)}ない`
+  } else if (type === "godan") {
+    const end = hiragana.slice(-1)
+    step1 = `1. Godan: change ${end} to its あ-row + ない → ${neg}`
+  } else if (type === "irregular") {
+    step1 = `1. Irregular negative (memorize): ${neg}`
+  }
+
+  return {
+    step1,
+    step2,
+    step3: `3. Result: ${pastNeg}`,
+    rule,
+    example,
   }
 }
 
