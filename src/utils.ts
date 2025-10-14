@@ -1,4 +1,4 @@
-import { verbs, teFormRules } from "./data"
+import { verbs, teFormRules, pastTenseRules } from "./data"
 import type {
   Verb,
   VerbType,
@@ -14,7 +14,16 @@ export function getCorrectAnswer(
   verb: Verb,
   conjugationType: ConjugationType
 ): string {
-  return conjugationType === "te-form" ? verb.teForm : verb.negativeForm || ""
+  switch (conjugationType) {
+    case "te-form":
+      return verb.teForm
+    case "negative":
+      return verb.negativeForm || ""
+    case "past":
+      return verb.pastTenseForm || ""
+    default:
+      return ""
+  }
 }
 
 export function checkAnswer(
@@ -83,10 +92,14 @@ export function getTransformationHint(
   verb: Verb,
   conjugationType: ConjugationType
 ): TransformationHint {
-  if (conjugationType === "te-form") {
-    return getTeFormHint(verb)
-  } else {
-    return getNegativeFormHint(verb)
+  if (conjugationType === "te-form") return getTeFormHint(verb)
+  if (conjugationType === "negative") return getNegativeFormHint(verb)
+  if (conjugationType === "past") return getPastTenseHint(verb)
+  return {
+    step1: "Unsupported conjugation type",
+    step2: "",
+    rule: "",
+    example: "",
   }
 }
 
@@ -316,6 +329,107 @@ function getNegativeFormHint(verb: Verb): TransformationHint {
         step2: `2. Apply negative conjugation rule`,
         rule: "General negative rule",
         example: `${hiragana} → ${negativeForm}`,
+      }
+  }
+}
+
+function getPastTenseHint(verb: Verb): TransformationHint {
+  const { type, hiragana, pastTenseForm, endingGroup } = verb
+
+  if (!pastTenseForm) {
+    return {
+      step1: `1. Past tense for ${hiragana} not available yet`,
+      step2: "2. This verb needs past tense data",
+      rule: "Past tense form missing",
+      example: "Data being added",
+    }
+  }
+
+  switch (type) {
+    case "ichidan":
+      return {
+        step1: `1. Identify: ${hiragana} is an ichidan verb (ends in る)`,
+        step2: `2. Remove る and add た to get ${pastTenseForm}`,
+        rule: "Ichidan past tense: る → た",
+        example: `${hiragana} → ${hiragana.slice(0, -1)}た = ${pastTenseForm}`,
+      }
+    case "irregular":
+      if (hiragana === "する") {
+        return {
+          step1: "1. Identify: する irregular",
+          step2: "2. する → した",
+          rule: "Irregular: する → した",
+          example: `する → した`,
+        }
+      } else if (hiragana === "くる") {
+        return {
+          step1: "1. Identify: くる irregular",
+          step2: "2. くる → きた",
+          rule: "Irregular: くる → きた",
+          example: `くる → きた`,
+        }
+      } else if (hiragana === "いく") {
+        return {
+          step1: "1. Identify: いく special irregular",
+          step2: "2. いく → いった",
+          rule: "Special: いく → いった",
+          example: `いく → いった`,
+        }
+      } else if (hiragana.endsWith("する")) {
+        return {
+          step1: `1. Identify: ${hiragana} is a する compound`,
+          step2: `2. Replace する with した`,
+          rule: "Compound: する → した",
+          example: `${hiragana} → ${hiragana.slice(
+            0,
+            -2
+          )}した = ${pastTenseForm}`,
+        }
+      } else {
+        return {
+          step1: `1. Identify: irregular verb`,
+          step2: `2. Memorize form: ${pastTenseForm}`,
+          rule: "Irregular: must memorize",
+          example: `${hiragana} → ${pastTenseForm}`,
+        }
+      }
+    case "godan":
+      if (!endingGroup) {
+        return {
+          step1: `1. Identify: godan verb`,
+          step2: `2. Apply ending group rule`,
+          rule: "Godan past: use ending rule",
+          example: `${hiragana} → ${pastTenseForm}`,
+        }
+      }
+      // Summarize rule from pastTenseRules
+      const godanMap = pastTenseRules.godan as Record<
+        string,
+        { pattern: string; replacement: string; description: string }
+      >
+      const rule = godanMap[endingGroup]
+      if (!rule) {
+        return {
+          step1: `1. Identify: ${hiragana} (godan)`,
+          step2: `2. Use memorized past: ${pastTenseForm}`,
+          rule: "Fallback: unspecified godan ending",
+          example: `${hiragana} → ${pastTenseForm}`,
+        }
+      }
+      return {
+        step1: `1. Identify: ${hiragana} ends in ${rule.pattern}`,
+        step2: `2. Replace ${rule.pattern} with ${rule.replacement}`,
+        rule: rule.description.replace("For verbs ending in", "Past tense:"),
+        example: `${hiragana} → ${hiragana.slice(0, -1)}${
+          rule.replacement
+        } = ${pastTenseForm}`,
+      }
+    default:
+      return {
+        step1: `1. Analyze: ${hiragana}`,
+        step2: `2. Apply past tense rule`,
+        rule: "General past tense rule",
+        example: `${hiragana} → ${pastTenseForm}`,
       }
   }
 }

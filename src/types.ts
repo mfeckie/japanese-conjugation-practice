@@ -1,5 +1,5 @@
 export type VerbType = "ichidan" | "godan" | "irregular"
-export type ConjugationType = "te-form" | "negative"
+export type ConjugationType = "te-form" | "negative" | "past"
 
 export interface Verb {
   kanji: string
@@ -8,6 +8,7 @@ export interface Verb {
   type: VerbType
   teForm: string
   negativeForm?: string
+  pastTenseForm?: string // New property for past tense conjugations
   meaning: string
   endingGroup?: string // For godan verbs (u, ku, gu, su, tsu, nu, bu, mu, ru)
 }

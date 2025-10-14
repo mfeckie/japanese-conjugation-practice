@@ -11,7 +11,7 @@
 
         <!-- Conjugation Type Selector -->
         <div class="mb-6">
-          <div class="inline-flex bg-gray-200 rounded-lg p-1">
+          <div class="inline-flex bg-gray-200 rounded-lg p-1 flex-wrap gap-1">
             <button
               @click="gameState.currentConjugationType = 'te-form'"
               :class="[
@@ -33,6 +33,17 @@
               ]"
             >
               Negative form
+            </button>
+            <button
+              @click="gameState.currentConjugationType = 'past'"
+              :class="[
+                'px-4 py-2 rounded-md font-medium transition-colors',
+                gameState.currentConjugationType === 'past'
+                  ? 'bg-purple-600 text-white shadow'
+                  : 'text-gray-700 hover:bg-gray-300',
+              ]"
+            >
+              Past tense
             </button>
           </div>
         </div>
@@ -97,7 +108,9 @@
               {{
                 gameState.currentConjugationType === "te-form"
                   ? "て-form (te-form)"
-                  : "negative form"
+                  : gameState.currentConjugationType === "negative"
+                  ? "negative form"
+                  : "past tense"
               }}:
             </h2>
 
