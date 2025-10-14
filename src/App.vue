@@ -5,22 +5,23 @@
     <div class="max-w-4xl mx-auto">
       <!-- Header -->
       <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 mb-2">日本語 て形練習</h1>
-        <p class="text-xl text-gray-600 mb-4">Japanese Te-Form Practice</p>
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">
+          Japanese Form Practice
+        </h1>
         <div class="flex justify-center gap-4 text-sm">
           <div class="bg-white px-4 py-2 rounded-lg shadow">
             <span class="font-semibold text-green-600"
-              >正解: {{ gameState.correctAnswers }}</span
+              >Correct: {{ gameState.correctAnswers }}</span
             >
           </div>
           <div class="bg-white px-4 py-2 rounded-lg shadow">
             <span class="font-semibold text-blue-600"
-              >試行: {{ gameState.totalAttempts }}</span
+              >Attempts: {{ gameState.totalAttempts }}</span
             >
           </div>
           <div class="bg-white px-4 py-2 rounded-lg shadow">
             <span class="font-semibold text-purple-600">
-              正解率:
+              Accuracy:
               {{
                 gameState.totalAttempts > 0
                   ? Math.round(
@@ -62,10 +63,6 @@
 
           <!-- Question -->
           <div class="text-center">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">
-              Convert to て-form (te-form):
-            </h2>
-
             <!-- Answer Input -->
             <div class="max-w-md mx-auto">
               <input
@@ -106,7 +103,7 @@
               class="bg-green-100 border-l-4 border-green-500 p-4 rounded"
             >
               <div class="text-2xl font-bold text-green-800 mb-2">
-                ✅ 正解！ (Correct!)
+                ✅ Correct!
               </div>
               <div class="text-lg text-green-700">
                 {{ gameState.currentVerb.hiragana }} →
@@ -119,7 +116,7 @@
               class="bg-red-100 border-l-4 border-red-500 p-4 rounded"
             >
               <div class="text-2xl font-bold text-red-800 mb-2">
-                ❌ 間違い (Incorrect)
+                ❌ Incorrect
               </div>
               <div class="text-lg text-red-700 mb-2">
                 Your answer:
