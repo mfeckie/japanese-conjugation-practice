@@ -25,6 +25,8 @@ export function getCorrectAnswer(
       return derivePoliteForm(verb)
     case "past-polite":
       return derivePastPoliteForm(verb)
+    case "polite-negative":
+      return derivePoliteNegativeForm(verb)
     default:
       return ""
   }
@@ -101,6 +103,8 @@ export function getTransformationHint(
   if (conjugationType === "past") return getPastTenseHint(verb)
   if (conjugationType === "polite") return getPoliteFormHint(verb)
   if (conjugationType === "past-polite") return getPastPoliteFormHint(verb)
+  if (conjugationType === "polite-negative")
+    return getPoliteNegativeFormHint(verb)
   return {
     step1: "Unsupported conjugation type",
     step2: "",
@@ -153,6 +157,14 @@ function derivePastPoliteForm(verb: Verb): string {
   return polite.endsWith("ます")
     ? polite.slice(0, -2) + "ました"
     : polite + "でした"
+}
+
+// Polite negative (～ません)
+function derivePoliteNegativeForm(verb: Verb): string {
+  const polite = derivePoliteForm(verb)
+  return polite.endsWith("ます")
+    ? polite.slice(0, -2) + "ません"
+    : polite + "ません"
 }
 
 function getPoliteFormHint(verb: Verb): TransformationHint {
@@ -261,6 +273,18 @@ function getPastPoliteFormHint(verb: Verb): TransformationHint {
     step3: `3. Result: ${pastPolite}`,
     rule: "Past polite: polite form ます → ました",
     example: `${polite} → ${pastPolite}`,
+  }
+}
+
+function getPoliteNegativeFormHint(verb: Verb): TransformationHint {
+  const polite = derivePoliteForm(verb)
+  const politeNeg = derivePoliteNegativeForm(verb)
+  return {
+    step1: `1. Form the polite (ます) form: ${polite}`,
+    step2: `2. Replace ます with ません to make it negative polite`,
+    step3: `3. Result: ${politeNeg}`,
+    rule: "Polite negative: ます → ません",
+    example: `${polite} → ${politeNeg}`,
   }
 }
 
