@@ -32,7 +32,7 @@
                   : 'text-gray-700 hover:bg-gray-300',
               ]"
             >
-              Negative form
+              Negative form (～ない)
             </button>
             <button
               @click="gameState.currentConjugationType = 'past'"
@@ -43,7 +43,7 @@
                   : 'text-gray-700 hover:bg-gray-300',
               ]"
             >
-              Past tense
+              Past tense (～た)
             </button>
             <button
               @click="gameState.currentConjugationType = 'polite'"
@@ -164,9 +164,9 @@
                 gameState.currentConjugationType === "te-form"
                   ? "て-form (te-form)"
                   : gameState.currentConjugationType === "negative"
-                  ? "negative form"
+                  ? "negative form (～ない)"
                   : gameState.currentConjugationType === "past"
-                  ? "past tense"
+                  ? "past tense (～た)"
                   : gameState.currentConjugationType === "polite"
                   ? "polite form (～ます)"
                   : gameState.currentConjugationType === "past-polite"
