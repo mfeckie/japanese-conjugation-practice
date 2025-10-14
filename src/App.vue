@@ -70,7 +70,7 @@
             <div class="max-w-md mx-auto">
               <input
                 ref="inputRef"
-                @keyup.enter="checkUserAnswer"
+                @keyup.enter="handleEnterKey"
                 @keyup="updateGameState"
                 @input="filterHiraganaInput"
                 type="text"
@@ -84,7 +84,6 @@
                   'border-red-500 bg-red-50': gameState.isCorrect === false,
                 }"
                 placeholder="Type romaji (e.g., 'tabete')..."
-                :disabled="gameState.isCorrect === true"
               />
 
               <!-- Check Answer Button -->
@@ -256,6 +255,17 @@ function updateGameState(event: KeyboardEvent) {
 
   // Update game state after keyup to ensure wanakana conversion is complete
   gameState.userAnswer = target.value
+}
+
+function handleEnterKey() {
+  // If we have a correct answer, move to next verb
+  if (gameState.isCorrect === true) {
+    nextVerb()
+    return
+  }
+
+  // Otherwise, check the current answer
+  checkUserAnswer()
 }
 
 function checkUserAnswer() {
