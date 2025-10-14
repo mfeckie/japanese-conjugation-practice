@@ -63,6 +63,44 @@
 
           <!-- Question -->
           <div class="text-center">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+              Convert to て-form (te-form):
+            </h2>
+
+            <!-- Hint Section -->
+            <div class="mb-6">
+              <button
+                @click="gameState.showHint = !gameState.showHint"
+                class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors mb-4"
+              >
+                {{ gameState.showHint ? 'Hide' : 'Show' }} Hint 💡
+              </button>
+              
+              <div v-if="gameState.showHint && gameState.currentVerb" 
+                   class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg text-left max-w-2xl mx-auto">
+                <h4 class="font-semibold text-yellow-800 mb-3">Step-by-Step Transformation:</h4>
+                <div class="space-y-2 text-yellow-700">
+                  <div class="flex items-start">
+                    <span class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3">{{ getTransformationHint(gameState.currentVerb).step1 }}</span>
+                  </div>
+                  <div class="flex items-start">
+                    <span class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3">{{ getTransformationHint(gameState.currentVerb).step2 }}</span>
+                  </div>
+                  <div v-if="getTransformationHint(gameState.currentVerb).step3" class="flex items-start">
+                    <span class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3">{{ getTransformationHint(gameState.currentVerb).step3 }}</span>
+                  </div>
+                </div>
+                <div class="mt-4 p-3 bg-yellow-100 rounded">
+                  <div class="font-semibold text-yellow-800 text-sm">Rule:</div>
+                  <div class="text-yellow-700 text-sm">{{ getTransformationHint(gameState.currentVerb).rule }}</div>
+                </div>
+                <div class="mt-2 p-3 bg-yellow-100 rounded">
+                  <div class="font-semibold text-yellow-800 text-sm">Example:</div>
+                  <div class="text-yellow-700 text-sm japanese-font">{{ getTransformationHint(gameState.currentVerb).example }}</div>
+                </div>
+              </div>
+            </div>
+
             <!-- Answer Input -->
             <div class="max-w-md mx-auto">
               <input
@@ -206,6 +244,7 @@ import {
   getExplanation,
   getVerbTypeColor,
   getVerbTypeDescription,
+  getTransformationHint,
 } from "./utils"
 
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -215,6 +254,7 @@ const gameState = reactive<GameState>({
   userAnswer: "",
   isCorrect: null,
   showExplanation: false,
+  showHint: false,
   score: 0,
   totalAttempts: 0,
   correctAnswers: 0,
@@ -225,6 +265,7 @@ function nextVerb() {
   gameState.userAnswer = ""
   gameState.isCorrect = null
   gameState.showExplanation = false
+  gameState.showHint = false
 
   // Clear and focus the input for the next question
   nextTick(() => {
