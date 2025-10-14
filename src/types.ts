@@ -1,4 +1,5 @@
 export type VerbType = "ichidan" | "godan" | "irregular"
+export type ConjugationType = "te-form" | "negative"
 
 export interface Verb {
   kanji: string
@@ -6,6 +7,7 @@ export interface Verb {
   romaji: string
   type: VerbType
   teForm: string
+  negativeForm?: string
   meaning: string
   endingGroup?: string // For godan verbs (u, ku, gu, su, tsu, nu, bu, mu, ru)
 }
@@ -26,6 +28,7 @@ export interface ConjugationRule {
 
 export interface GameState {
   currentVerb: Verb | null
+  currentConjugationType: ConjugationType
   userAnswer: string
   isCorrect: boolean | null
   showExplanation: boolean
@@ -36,6 +39,12 @@ export interface GameState {
 }
 
 export interface TeFormRules {
+  ichidan: ConjugationRule
+  irregular: { [key: string]: ConjugationRule }
+  godan: { [key: string]: ConjugationRule }
+}
+
+export interface NegativeFormRules {
   ichidan: ConjugationRule
   irregular: { [key: string]: ConjugationRule }
   godan: { [key: string]: ConjugationRule }

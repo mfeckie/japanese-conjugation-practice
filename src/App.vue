@@ -8,6 +8,35 @@
         <h1 class="text-4xl font-bold text-gray-800 mb-2">
           Japanese Form Practice
         </h1>
+
+        <!-- Conjugation Type Selector -->
+        <div class="mb-6">
+          <div class="inline-flex bg-gray-200 rounded-lg p-1">
+            <button
+              @click="gameState.currentConjugationType = 'te-form'"
+              :class="[
+                'px-4 py-2 rounded-md font-medium transition-colors',
+                gameState.currentConjugationType === 'te-form'
+                  ? 'bg-blue-600 text-white shadow'
+                  : 'text-gray-700 hover:bg-gray-300',
+              ]"
+            >
+              て-form
+            </button>
+            <button
+              @click="gameState.currentConjugationType = 'negative'"
+              :class="[
+                'px-4 py-2 rounded-md font-medium transition-colors',
+                gameState.currentConjugationType === 'negative'
+                  ? 'bg-red-600 text-white shadow'
+                  : 'text-gray-700 hover:bg-gray-300',
+              ]"
+            >
+              Negative form
+            </button>
+          </div>
+        </div>
+
         <div class="flex justify-center gap-4 text-sm">
           <div class="bg-white px-4 py-2 rounded-lg shadow">
             <span class="font-semibold text-green-600"
@@ -64,7 +93,12 @@
           <!-- Question -->
           <div class="text-center">
             <h2 class="text-2xl font-semibold text-gray-800 mb-4">
-              Convert to て-form (te-form):
+              Convert to
+              {{
+                gameState.currentConjugationType === "te-form"
+                  ? "て-form (te-form)"
+                  : "negative form"
+              }}:
             </h2>
 
             <!-- Hint Section -->
@@ -88,7 +122,10 @@
                     <span
                       class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3"
                       >{{
-                        getTransformationHint(gameState.currentVerb).step1
+                        getTransformationHint(
+                          gameState.currentVerb,
+                          gameState.currentConjugationType
+                        ).step1
                       }}</span
                     >
                   </div>
@@ -96,18 +133,29 @@
                     <span
                       class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3"
                       >{{
-                        getTransformationHint(gameState.currentVerb).step2
+                        getTransformationHint(
+                          gameState.currentVerb,
+                          gameState.currentConjugationType
+                        ).step2
                       }}</span
                     >
                   </div>
                   <div
-                    v-if="getTransformationHint(gameState.currentVerb).step3"
+                    v-if="
+                      getTransformationHint(
+                        gameState.currentVerb,
+                        gameState.currentConjugationType
+                      ).step3
+                    "
                     class="flex items-start"
                   >
                     <span
                       class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3"
                       >{{
-                        getTransformationHint(gameState.currentVerb).step3
+                        getTransformationHint(
+                          gameState.currentVerb,
+                          gameState.currentConjugationType
+                        ).step3
                       }}</span
                     >
                   </div>
@@ -115,15 +163,25 @@
                 <div class="mt-4 p-3 bg-yellow-100 rounded">
                   <div class="font-semibold text-yellow-800 text-sm">Rule:</div>
                   <div class="text-yellow-700 text-sm">
-                    {{ getTransformationHint(gameState.currentVerb).rule }}
+                    {{
+                      getTransformationHint(
+                        gameState.currentVerb,
+                        gameState.currentConjugationType
+                      ).rule
+                    }}
                   </div>
                 </div>
                 <div class="mt-2 p-3 bg-yellow-100 rounded">
                   <div class="font-semibold text-yellow-800 text-sm">
                     Example:
                   </div>
-                  <div class="text-yellow-700 text-sm japanese-font">
-                    {{ getTransformationHint(gameState.currentVerb).example }}
+                  <div class="text-yellow-600 text-sm font-mono">
+                    {{
+                      getTransformationHint(
+                        gameState.currentVerb,
+                        gameState.currentConjugationType
+                      ).example
+                    }}
                   </div>
                 </div>
               </div>
@@ -172,7 +230,12 @@
               </div>
               <div class="text-lg text-green-700">
                 {{ gameState.currentVerb.hiragana }} →
-                {{ gameState.currentVerb.teForm }}
+                {{
+                  getCorrectAnswer(
+                    gameState.currentVerb,
+                    gameState.currentConjugationType
+                  )
+                }}
               </div>
             </div>
 
@@ -190,7 +253,10 @@
               <div class="text-lg text-red-700 mb-4">
                 Correct answer:
                 <span class="font-semibold japanese-font">{{
-                  gameState.currentVerb.teForm
+                  getCorrectAnswer(
+                    gameState.currentVerb,
+                    gameState.currentConjugationType
+                  )
                 }}</span>
               </div>
 
@@ -233,7 +299,10 @@
                 <p class="text-yellow-800">
                   Please type the correct answer to continue:
                   <strong class="japanese-font">{{
-                    gameState.currentVerb.teForm
+                    getCorrectAnswer(
+                      gameState.currentVerb,
+                      gameState.currentConjugationType
+                    )
                   }}</strong>
                 </p>
               </div>
@@ -261,10 +330,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted, ref, nextTick } from "vue"
+import { reactive, onMounted, ref, nextTick, watch } from "vue"
 import * as wanakana from "wanakana"
 import type { GameState } from "./types"
-import { verbs } from "./data"
+
 import {
   getRandomVerb,
   checkAnswer,
@@ -272,12 +341,14 @@ import {
   getVerbTypeColor,
   getVerbTypeDescription,
   getTransformationHint,
+  getCorrectAnswer,
 } from "./utils"
 
 const inputRef = ref<HTMLInputElement | null>(null)
 
 const gameState = reactive<GameState>({
   currentVerb: null,
+  currentConjugationType: "te-form",
   userAnswer: "",
   isCorrect: null,
   showExplanation: false,
@@ -288,7 +359,7 @@ const gameState = reactive<GameState>({
 })
 
 function nextVerb() {
-  gameState.currentVerb = getRandomVerb(verbs)
+  gameState.currentVerb = getRandomVerb()
   gameState.userAnswer = ""
   gameState.isCorrect = null
   gameState.showExplanation = false
@@ -338,7 +409,11 @@ function checkUserAnswer() {
     return
   }
 
-  const isCorrect = checkAnswer(gameState.currentVerb, gameState.userAnswer)
+  const isCorrect = checkAnswer(
+    gameState.userAnswer,
+    gameState.currentVerb,
+    gameState.currentConjugationType
+  )
   gameState.isCorrect = isCorrect
   gameState.totalAttempts++
 
@@ -350,10 +425,18 @@ function checkUserAnswer() {
 
 // Remove the watch function that was interfering with romaji input
 
+// Watch for conjugation type changes and generate new verb
+watch(
+  () => gameState.currentConjugationType,
+  () => {
+    nextVerb()
+  }
+)
+
 onMounted(() => {
   nextVerb()
 
-  // Set up wanakana binding and focus
+  // Setup wanakana for hiragana input
   nextTick(() => {
     if (inputRef.value) {
       // Bind wanakana to convert romaji to hiragana
