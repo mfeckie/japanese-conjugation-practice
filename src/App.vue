@@ -477,11 +477,26 @@ function checkUserAnswer() {
 
 // Remove the watch function that was interfering with romaji input
 
-// Watch for conjugation type changes and generate new verb
+// Watch for conjugation type changes but KEEP the current verb; just reset answer state
 watch(
   () => gameState.currentConjugationType,
   () => {
-    nextVerb()
+    // If no current verb yet (initial edge case), fetch one
+    if (!gameState.currentVerb) {
+      nextVerb()
+      return
+    }
+    // Otherwise just reset interaction state without changing the verb
+    gameState.userAnswer = ""
+    gameState.isCorrect = null
+    gameState.showExplanation = false
+    gameState.showHint = false
+    nextTick(() => {
+      if (inputRef.value) {
+        inputRef.value.value = ""
+        inputRef.value.focus()
+      }
+    })
   }
 )
 
