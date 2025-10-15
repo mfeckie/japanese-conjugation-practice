@@ -46,7 +46,8 @@ export function checkAnswer(
 }
 
 export function getExplanation(verb: Verb): string {
-  const { type, hiragana, teForm } = verb;
+  const { type, hiragana } = verb;
+  const teForm = deriveTeForm(verb);
 
   switch (type) {
     case 'ichidan':
@@ -145,8 +146,8 @@ export function deriveTeForm(verb: Verb): string {
     }
   }
 
-  // Fallback to existing hardcoded value if rules don't work
-  return verb.teForm;
+  // If no rule applies, return empty string or throw error
+  return '';
 }
 
 export function deriveNegativeForm(verb: Verb): string {
@@ -171,8 +172,8 @@ export function deriveNegativeForm(verb: Verb): string {
     }
   }
 
-  // Fallback to existing hardcoded value if rules don't work
-  return verb.negativeForm || '';
+  // If no rule applies, return empty string
+  return '';
 }
 
 export function derivePastTenseForm(verb: Verb): string {
@@ -197,8 +198,8 @@ export function derivePastTenseForm(verb: Verb): string {
     }
   }
 
-  // Fallback to existing hardcoded value if rules don't work
-  return verb.pastTenseForm || '';
+  // If no rule applies, return empty string
+  return '';
 }
 
 // --- Polite (～ます) form derivation ---
@@ -396,9 +397,7 @@ function getPoliteNegativeFormHint(verb: Verb): TransformationHint {
 
 function getPastNegativeFormHint(verb: Verb): TransformationHint {
   const { hiragana, type } = verb;
-  const neg =
-    verb.negativeForm ||
-    derivePastNegativeForm({ ...verb, negativeForm: undefined });
+  const neg = deriveNegativeForm(verb);
   const pastNeg = derivePastNegativeForm(verb);
   if (!neg || !pastNeg) {
     return {
@@ -446,7 +445,8 @@ function getPastPoliteNegativeFormHint(verb: Verb): TransformationHint {
 }
 
 function getTeFormHint(verb: Verb): TransformationHint {
-  const { type, hiragana, teForm, endingGroup } = verb;
+  const { type, hiragana, endingGroup } = verb;
+  const teForm = deriveTeForm(verb);
 
   switch (type) {
     case 'ichidan':
@@ -599,7 +599,8 @@ function getTeFormHint(verb: Verb): TransformationHint {
 }
 
 function getNegativeFormHint(verb: Verb): TransformationHint {
-  const { type, hiragana, negativeForm } = verb;
+  const { type, hiragana } = verb;
+  const negativeForm = deriveNegativeForm(verb);
 
   if (!negativeForm) {
     return {
@@ -677,7 +678,8 @@ function getNegativeFormHint(verb: Verb): TransformationHint {
 }
 
 function getPastTenseHint(verb: Verb): TransformationHint {
-  const { type, hiragana, pastTenseForm, endingGroup } = verb;
+  const { type, hiragana, endingGroup } = verb;
+  const pastTenseForm = derivePastTenseForm(verb);
 
   if (!pastTenseForm) {
     return {

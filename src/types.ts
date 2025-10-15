@@ -14,9 +14,9 @@ export interface Verb {
   hiragana: string;
   romaji: string;
   type: VerbType;
-  teForm: string;
-  negativeForm?: string;
-  pastTenseForm?: string; // New property for past tense conjugations
+  teForm?: string; // Now optional - derived from rules
+  negativeForm?: string; // Optional - derived from rules
+  pastTenseForm?: string; // Optional - derived from rules
   // We derive polite (～ます) form dynamically, so no stored property required
   meaning: string;
   endingGroup?: string; // For godan verbs (u, ku, gu, su, tsu, nu, bu, mu, ru)
