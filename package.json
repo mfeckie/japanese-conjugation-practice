@@ -15,7 +15,7 @@
     "wanakana": "^5.3.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.3",
+    "@biomejs/biome": "2.2.6",
     "@rsbuild/core": "^1.5.14",
     "@rsbuild/plugin-vue": "^1.1.2",
     "@tailwindcss/postcss": "^4.1.14",
