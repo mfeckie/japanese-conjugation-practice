@@ -345,160 +345,160 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted, ref, nextTick, watch } from "vue"
-import * as wanakana from "wanakana"
-import type { GameState } from "./types"
+import { nextTick, onMounted, reactive, ref, watch } from 'vue';
+import * as wanakana from 'wanakana';
+import type { GameState } from './types';
 
 import {
-  getRandomVerb,
   checkAnswer,
+  getCorrectAnswer,
   getExplanation,
+  getRandomVerb,
+  getTransformationHint,
   getVerbTypeColor,
   getVerbTypeDescription,
-  getTransformationHint,
-  getCorrectAnswer,
-} from "./utils"
+} from './utils';
 
-const inputRef = ref<HTMLInputElement | null>(null)
+const inputRef = ref<HTMLInputElement | null>(null);
 
 const gameState = reactive<GameState>({
   currentVerb: null,
-  currentConjugationType: "te-form",
-  userAnswer: "",
+  currentConjugationType: 'te-form',
+  userAnswer: '',
   isCorrect: null,
   showExplanation: false,
   showHint: false,
   score: 0,
   totalAttempts: 0,
   correctAnswers: 0,
-})
+});
 
 // Grouped button configuration (ordered logically: Plain, Plain Past, Plain Negative, Plain Past Negative, Polite, Polite Past, Polite Negative, Polite Past Negative)
 interface ButtonConfig {
-  type: any
-  label: string
-  activeClass: string
+  type: any;
+  label: string;
+  activeClass: string;
 }
 interface ButtonGroup {
-  label: string
-  items: ButtonConfig[]
+  label: string;
+  items: ButtonConfig[];
 }
 
 const buttonGroups: ButtonGroup[] = [
   {
-    label: "Plain",
+    label: 'Plain',
     items: [
       {
-        type: "te-form",
-        label: "て-form",
-        activeClass: "bg-blue-600 text-white shadow",
+        type: 'te-form',
+        label: 'て-form',
+        activeClass: 'bg-blue-600 text-white shadow',
       },
       {
-        type: "past",
-        label: "Past (～た)",
-        activeClass: "bg-purple-600 text-white shadow",
+        type: 'past',
+        label: 'Past (～た)',
+        activeClass: 'bg-purple-600 text-white shadow',
       },
       {
-        type: "negative",
-        label: "Negative (～ない)",
-        activeClass: "bg-red-600 text-white shadow",
+        type: 'negative',
+        label: 'Negative (～ない)',
+        activeClass: 'bg-red-600 text-white shadow',
       },
       {
-        type: "past-negative",
-        label: "Past Negative (～なかった)",
-        activeClass: "bg-orange-700 text-white shadow",
+        type: 'past-negative',
+        label: 'Past Negative (～なかった)',
+        activeClass: 'bg-orange-700 text-white shadow',
       },
     ],
   },
   {
-    label: "Polite",
+    label: 'Polite',
     items: [
       {
-        type: "polite",
-        label: "Polite (～ます)",
-        activeClass: "bg-teal-600 text-white shadow",
+        type: 'polite',
+        label: 'Polite (～ます)',
+        activeClass: 'bg-teal-600 text-white shadow',
       },
       {
-        type: "past-polite",
-        label: "Past Polite (～ました)",
-        activeClass: "bg-indigo-700 text-white shadow",
+        type: 'past-polite',
+        label: 'Past Polite (～ました)',
+        activeClass: 'bg-indigo-700 text-white shadow',
       },
       {
-        type: "polite-negative",
-        label: "Polite Negative (～ません)",
-        activeClass: "bg-rose-600 text-white shadow",
+        type: 'polite-negative',
+        label: 'Polite Negative (～ません)',
+        activeClass: 'bg-rose-600 text-white shadow',
       },
       {
-        type: "past-polite-negative",
-        label: "Past Polite Neg (～ませんでした)",
-        activeClass: "bg-rose-800 text-white shadow",
+        type: 'past-polite-negative',
+        label: 'Past Polite Neg (～ませんでした)',
+        activeClass: 'bg-rose-800 text-white shadow',
       },
     ],
   },
-]
+];
 
 function nextVerb() {
-  gameState.currentVerb = getRandomVerb()
-  gameState.userAnswer = ""
-  gameState.isCorrect = null
-  gameState.showExplanation = false
-  gameState.showHint = false
+  gameState.currentVerb = getRandomVerb();
+  gameState.userAnswer = '';
+  gameState.isCorrect = null;
+  gameState.showExplanation = false;
+  gameState.showHint = false;
 
   // Clear and focus the input for the next question
   nextTick(() => {
     if (inputRef.value) {
-      inputRef.value.value = "" // Clear the input field
-      inputRef.value.focus()
+      inputRef.value.value = ''; // Clear the input field
+      inputRef.value.focus();
     }
-  })
+  });
 }
 
 function clearResults() {
   if (gameState.isCorrect !== null) {
-    gameState.isCorrect = null
-    gameState.showExplanation = false
+    gameState.isCorrect = null;
+    gameState.showExplanation = false;
   }
 }
 
 function filterHiraganaInput() {
   // Clear results when user starts typing again
-  clearResults()
+  clearResults();
 }
 
 function updateGameState(event: KeyboardEvent) {
-  const target = event.target as HTMLInputElement
+  const target = event.target as HTMLInputElement;
 
   // Update game state after keyup to ensure wanakana conversion is complete
-  gameState.userAnswer = target.value
+  gameState.userAnswer = target.value;
 }
 
 function handleEnterKey() {
   // If we have a correct answer, move to next verb
   if (gameState.isCorrect === true) {
-    nextVerb()
-    return
+    nextVerb();
+    return;
   }
 
   // Otherwise, check the current answer
-  checkUserAnswer()
+  checkUserAnswer();
 }
 
 function checkUserAnswer() {
   if (!gameState.currentVerb || !gameState.userAnswer.trim()) {
-    return
+    return;
   }
 
   const isCorrect = checkAnswer(
     gameState.userAnswer,
     gameState.currentVerb,
-    gameState.currentConjugationType
-  )
-  gameState.isCorrect = isCorrect
-  gameState.totalAttempts++
+    gameState.currentConjugationType,
+  );
+  gameState.isCorrect = isCorrect;
+  gameState.totalAttempts++;
 
   if (isCorrect) {
-    gameState.correctAnswers++
-    gameState.score += 10
+    gameState.correctAnswers++;
+    gameState.score += 10;
   }
 }
 
@@ -510,37 +510,37 @@ watch(
   () => {
     // If no current verb yet (initial edge case), fetch one
     if (!gameState.currentVerb) {
-      nextVerb()
-      return
+      nextVerb();
+      return;
     }
     // Otherwise just reset interaction state without changing the verb
-    gameState.userAnswer = ""
-    gameState.isCorrect = null
-    gameState.showExplanation = false
-    gameState.showHint = false
+    gameState.userAnswer = '';
+    gameState.isCorrect = null;
+    gameState.showExplanation = false;
+    gameState.showHint = false;
     nextTick(() => {
       if (inputRef.value) {
-        inputRef.value.value = ""
-        inputRef.value.focus()
+        inputRef.value.value = '';
+        inputRef.value.focus();
       }
-    })
-  }
-)
+    });
+  },
+);
 
 onMounted(() => {
   // Ensure browser tab title matches application title
-  document.title = "Japanese Form Practice"
-  nextVerb()
+  document.title = 'Japanese Form Practice';
+  nextVerb();
 
   // Setup wanakana for hiragana input
   nextTick(() => {
     if (inputRef.value) {
       // Bind wanakana to convert romaji to hiragana
-      wanakana.bind(inputRef.value, { IMEMode: true })
-      inputRef.value.focus()
+      wanakana.bind(inputRef.value, { IMEMode: true });
+      inputRef.value.focus();
     }
-  })
-})
+  });
+});
 </script>
 
 <style scoped>

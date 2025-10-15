@@ -1,371 +1,437 @@
-import { verbs, teFormRules, pastTenseRules } from "./data"
+import { negativeFormRules, pastTenseRules, teFormRules, verbs } from './data';
 import type {
+  ConjugationType,
+  TransformationHint,
   Verb,
   VerbType,
-  TransformationHint,
-  ConjugationType,
-} from "./types"
+} from './types';
 
 export function getRandomVerb(): Verb {
-  return verbs[Math.floor(Math.random() * verbs.length)]
+  return verbs[Math.floor(Math.random() * verbs.length)];
 }
 
 export function getCorrectAnswer(
   verb: Verb,
-  conjugationType: ConjugationType
+  conjugationType: ConjugationType,
 ): string {
   switch (conjugationType) {
-    case "te-form":
-      return verb.teForm
-    case "negative":
-      return verb.negativeForm || ""
-    case "past":
-      return verb.pastTenseForm || ""
-    case "polite":
-      return derivePoliteForm(verb)
-    case "past-polite":
-      return derivePastPoliteForm(verb)
-    case "polite-negative":
-      return derivePoliteNegativeForm(verb)
-    case "past-polite-negative":
-      return derivePastPoliteNegativeForm(verb)
-    case "past-negative":
-      return derivePastNegativeForm(verb)
+    case 'te-form':
+      return deriveTeForm(verb);
+    case 'negative':
+      return deriveNegativeForm(verb);
+    case 'past':
+      return derivePastTenseForm(verb);
+    case 'polite':
+      return derivePoliteForm(verb);
+    case 'past-polite':
+      return derivePastPoliteForm(verb);
+    case 'polite-negative':
+      return derivePoliteNegativeForm(verb);
+    case 'past-polite-negative':
+      return derivePastPoliteNegativeForm(verb);
+    case 'past-negative':
+      return derivePastNegativeForm(verb);
     default:
-      return ""
+      return '';
   }
 }
 
 export function checkAnswer(
   userAnswer: string,
   verb: Verb,
-  conjugationType: ConjugationType
+  conjugationType: ConjugationType,
 ): boolean {
-  const correctAnswer = getCorrectAnswer(verb, conjugationType)
-  return userAnswer.trim() === correctAnswer
+  const correctAnswer = getCorrectAnswer(verb, conjugationType);
+  return userAnswer.trim() === correctAnswer.trim();
 }
 
 export function getExplanation(verb: Verb): string {
-  const { type, hiragana, teForm } = verb
+  const { type, hiragana } = verb;
+  const teForm = deriveTeForm(verb);
 
   switch (type) {
-    case "ichidan":
-      return `${hiragana} is an ichidan verb. ${teFormRules.ichidan.description}. So ${hiragana} becomes ${teForm}.`
+    case 'ichidan':
+      return `${hiragana} is an ichidan verb. ${teFormRules.ichidan.description}. So ${hiragana} becomes ${teForm}.`;
 
-    case "irregular":
-      const irregularRule = teFormRules.irregular[hiragana]
+    case 'irregular': {
+      const irregularRule = teFormRules.irregular[hiragana];
       if (irregularRule) {
-        return `${hiragana} is an irregular verb. ${irregularRule.description}.`
+        return `${hiragana} is an irregular verb. ${irregularRule.description}.`;
       }
-      return `${hiragana} is an irregular verb with a special て-form: ${teForm}.`
+      return `${hiragana} is an irregular verb with a special て-form: ${teForm}.`;
+    }
 
-    case "godan":
-      const endingGroup = verb.endingGroup
+    case 'godan': {
+      const endingGroup = verb.endingGroup;
       if (endingGroup && teFormRules.godan[endingGroup]) {
-        const rule = teFormRules.godan[endingGroup]
-        return `${hiragana} is a godan verb. ${rule.description}. So ${hiragana} becomes ${teForm}.`
+        const rule = teFormRules.godan[endingGroup];
+        return `${hiragana} is a godan verb. ${rule.description}. So ${hiragana} becomes ${teForm}.`;
       }
-      return `${hiragana} is a godan verb that becomes ${teForm} in て-form.`
+      return `${hiragana} is a godan verb that becomes ${teForm} in て-form.`;
+    }
 
     default:
-      return `The て-form of ${hiragana} is ${teForm}.`
+      return `The て-form of ${hiragana} is ${teForm}.`;
   }
 }
 
 export function getVerbTypeColor(type: VerbType): string {
   switch (type) {
-    case "ichidan":
-      return "bg-blue-100 text-blue-800"
-    case "godan":
-      return "bg-green-100 text-green-800"
-    case "irregular":
-      return "bg-red-100 text-red-800"
+    case 'ichidan':
+      return 'bg-blue-100 text-blue-800';
+    case 'godan':
+      return 'bg-green-100 text-green-800';
+    case 'irregular':
+      return 'bg-red-100 text-red-800';
     default:
-      return "bg-gray-100 text-gray-800"
+      return 'bg-gray-100 text-gray-800';
   }
 }
 
 export function getVerbTypeDescription(type: VerbType): string {
   switch (type) {
-    case "ichidan":
-      return "Ichidan verbs (一段動詞) end in る and the syllable before る is in the i-row (い, き, し, etc.) or e-row (え, け, せ, etc.)"
-    case "godan":
-      return "Godan verbs (五段動詞) can end in various syllables (う, く, ぐ, す, つ, ぬ, ぶ, む, る) and follow specific patterns"
-    case "irregular":
-      return "Irregular verbs (不規則動詞) have unique conjugation patterns that must be memorized"
+    case 'ichidan':
+      return 'Ichidan verbs (一段動詞) end in る and the syllable before る is in the i-row (い, き, し, etc.) or e-row (え, け, せ, etc.)';
+    case 'godan':
+      return 'Godan verbs (五段動詞) can end in various syllables (う, く, ぐ, す, つ, ぬ, ぶ, む, る) and follow specific patterns';
+    case 'irregular':
+      return 'Irregular verbs (不規則動詞) have unique conjugation patterns that must be memorized';
     default:
-      return ""
+      return '';
   }
 }
 
 export function getTransformationHint(
   verb: Verb,
-  conjugationType: ConjugationType
+  conjugationType: ConjugationType,
 ): TransformationHint {
-  if (conjugationType === "te-form") return getTeFormHint(verb)
-  if (conjugationType === "negative") return getNegativeFormHint(verb)
-  if (conjugationType === "past") return getPastTenseHint(verb)
-  if (conjugationType === "polite") return getPoliteFormHint(verb)
-  if (conjugationType === "past-polite") return getPastPoliteFormHint(verb)
-  if (conjugationType === "polite-negative")
-    return getPoliteNegativeFormHint(verb)
-  if (conjugationType === "past-polite-negative")
-    return getPastPoliteNegativeFormHint(verb)
-  if (conjugationType === "past-negative") return getPastNegativeFormHint(verb)
+  if (conjugationType === 'te-form') return getTeFormHint(verb);
+  if (conjugationType === 'negative') return getNegativeFormHint(verb);
+  if (conjugationType === 'past') return getPastTenseHint(verb);
+  if (conjugationType === 'polite') return getPoliteFormHint(verb);
+  if (conjugationType === 'past-polite') return getPastPoliteFormHint(verb);
+  if (conjugationType === 'polite-negative')
+    return getPoliteNegativeFormHint(verb);
+  if (conjugationType === 'past-polite-negative')
+    return getPastPoliteNegativeFormHint(verb);
+  if (conjugationType === 'past-negative') return getPastNegativeFormHint(verb);
   return {
-    step1: "Unsupported conjugation type",
-    step2: "",
-    rule: "",
-    example: "",
+    step1: 'Unsupported conjugation type',
+    step2: '',
+    rule: '',
+    example: '',
+  };
+}
+
+// --- Rule-based conjugation derivation ---
+export function deriveTeForm(verb: Verb): string {
+  const { hiragana, type, endingGroup } = verb;
+
+  if (type === 'ichidan') {
+    // Apply ichidan rule: remove る and add て
+    if (hiragana.endsWith('る')) {
+      return `${hiragana.slice(0, -1)}て`;
+    }
+  } else if (type === 'irregular') {
+    // Check for irregular rules
+    const rule = teFormRules.irregular[hiragana];
+    if (rule) {
+      return hiragana.replace(rule.pattern, rule.replacement);
+    }
+    // Handle compound する verbs (e.g., りょこうする → りょこうして)
+    if (hiragana.endsWith('する')) {
+      return `${hiragana.slice(0, -2)}して`;
+    }
+  } else if (type === 'godan' && endingGroup) {
+    // Apply godan rule based on ending group
+    const rule = teFormRules.godan[endingGroup];
+    if (rule) {
+      return `${hiragana.slice(0, -rule.pattern.length)}${rule.replacement}`;
+    }
   }
+
+  // If no rule applies, return empty string or throw error
+  return '';
+}
+
+export function deriveNegativeForm(verb: Verb): string {
+  const { hiragana, type, endingGroup } = verb;
+
+  if (type === 'ichidan') {
+    // Apply ichidan rule: remove る and add ない
+    if (hiragana.endsWith('る')) {
+      return `${hiragana.slice(0, -1)}ない`;
+    }
+  } else if (type === 'irregular') {
+    // Check for irregular rules
+    const rule = negativeFormRules.irregular[hiragana];
+    if (rule) {
+      return hiragana.replace(rule.pattern, rule.replacement);
+    }
+    // Handle compound する verbs (e.g., りょこうする → りょこうしない)
+    if (hiragana.endsWith('する')) {
+      return `${hiragana.slice(0, -2)}しない`;
+    }
+  } else if (type === 'godan' && endingGroup) {
+    // Apply godan rule based on ending group
+    const rule = negativeFormRules.godan[endingGroup];
+    if (rule) {
+      return `${hiragana.slice(0, -rule.pattern.length)}${rule.replacement}`;
+    }
+  }
+
+  // If no rule applies, return empty string
+  return '';
+}
+
+export function derivePastTenseForm(verb: Verb): string {
+  const { hiragana, type, endingGroup } = verb;
+
+  if (type === 'ichidan') {
+    // Apply ichidan rule: remove る and add た
+    if (hiragana.endsWith('る')) {
+      return `${hiragana.slice(0, -1)}た`;
+    }
+  } else if (type === 'irregular') {
+    // Check for irregular rules
+    const rule = pastTenseRules.irregular[hiragana];
+    if (rule) {
+      return hiragana.replace(rule.pattern, rule.replacement);
+    }
+    // Handle compound する verbs (e.g., りょこうする → りょこうした)
+    if (hiragana.endsWith('する')) {
+      return `${hiragana.slice(0, -2)}した`;
+    }
+  } else if (type === 'godan' && endingGroup) {
+    // Apply godan rule based on ending group
+    const rule = pastTenseRules.godan[endingGroup];
+    if (rule) {
+      return `${hiragana.slice(0, -rule.pattern.length)}${rule.replacement}`;
+    }
+  }
+
+  // If no rule applies, return empty string
+  return '';
 }
 
 // --- Polite (～ます) form derivation ---
 function derivePoliteForm(verb: Verb): string {
-  const { hiragana, type } = verb
-  if (type === "ichidan") {
+  const { hiragana, type } = verb;
+  if (type === 'ichidan') {
     // Remove final る and add ます
-    if (hiragana.endsWith("る")) return hiragana.slice(0, -1) + "ます"
-  } else if (type === "irregular") {
-    if (hiragana === "する") return "します"
-    if (hiragana === "くる") return "きます"
-    if (hiragana === "いく") return "いきます" // regular pattern
-    if (hiragana === "ある") return "あります"
-    if (hiragana.endsWith("する")) {
+    if (hiragana.endsWith('る')) return hiragana.slice(0, -1) + 'ます';
+  } else if (type === 'irregular') {
+    if (hiragana === 'する') return 'します';
+    if (hiragana === 'くる') return 'きます';
+    if (hiragana === 'いく') return 'いきます'; // regular pattern
+    if (hiragana === 'ある') return 'あります';
+    if (hiragana.endsWith('する')) {
       // Compound する verb
-      return hiragana.slice(0, -2) + "します"
+      return hiragana.slice(0, -2) + 'します';
     }
-  } else if (type === "godan") {
+  } else if (type === 'godan') {
     // Convert final sound to its い-row + ます
-    const end = hiragana.slice(-1)
-    const stem = hiragana.slice(0, -1)
+    const end = hiragana.slice(-1);
+    const stem = hiragana.slice(0, -1);
     const mapping: Record<string, string> = {
-      う: "い",
-      く: "き",
-      ぐ: "ぎ",
-      す: "し",
-      つ: "ち",
-      ぬ: "に",
-      ぶ: "び",
-      む: "み",
-      る: "り",
-    }
-    const iRow = mapping[end]
-    if (iRow) return stem + iRow + "ます"
+      う: 'い',
+      く: 'き',
+      ぐ: 'ぎ',
+      す: 'し',
+      つ: 'ち',
+      ぬ: 'に',
+      ぶ: 'び',
+      む: 'み',
+      る: 'り',
+    };
+    const iRow = mapping[end];
+    if (iRow) return stem + iRow + 'ます';
   }
   // Fallback (shouldn't normally happen)
-  return hiragana + "ます"
+  return hiragana + 'ます';
 }
 
 // Past polite (～ました) always formed from polite stem + ました
 function derivePastPoliteForm(verb: Verb): string {
-  const polite = derivePoliteForm(verb)
+  const polite = derivePoliteForm(verb);
   // Replace final ます with ました (safe assumption all polite forms end with ます)
-  return polite.endsWith("ます")
-    ? polite.slice(0, -2) + "ました"
-    : polite + "でした"
+  return polite.endsWith('ます')
+    ? polite.slice(0, -2) + 'ました'
+    : polite + 'でした';
 }
 
 // Polite negative (～ません)
 function derivePoliteNegativeForm(verb: Verb): string {
-  const polite = derivePoliteForm(verb)
-  return polite.endsWith("ます")
-    ? polite.slice(0, -2) + "ません"
-    : polite + "ません"
+  const polite = derivePoliteForm(verb);
+  return polite.endsWith('ます')
+    ? polite.slice(0, -2) + 'ません'
+    : polite + 'ません';
 }
 
 // Past polite negative (～ませんでした)
 function derivePastPoliteNegativeForm(verb: Verb): string {
   // We can build from polite negative: ません → ませんでした
-  const neg = derivePoliteNegativeForm(verb)
-  return neg.endsWith("ません") ? neg + "でした" : neg + "でした"
+  const neg = derivePoliteNegativeForm(verb);
+  return neg.endsWith('ません') ? neg + 'でした' : neg + 'でした';
 }
 
 // Plain past negative (〜なかった)
 function derivePastNegativeForm(verb: Verb): string {
-  // Build from dictionary negative form if available, else attempt to construct
-  let neg = verb.negativeForm
-  if (!neg) {
-    // Attempt on-the-fly: ichidan remove る add ない; godan approximate by replacing final syllable with its あ-row + ない
-    const { hiragana, type } = verb
-    if (type === "ichidan" && hiragana.endsWith("る")) {
-      neg = hiragana.slice(0, -1) + "ない"
-    } else if (type === "irregular") {
-      if (hiragana === "する") neg = "しない"
-      else if (hiragana === "くる") neg = "こない"
-      else if (hiragana === "いく") neg = "いかない"
-      else if (hiragana === "ある") neg = "ない"
-      else if (hiragana.endsWith("する")) neg = hiragana.slice(0, -2) + "しない"
-    } else if (type === "godan") {
-      const h = verb.hiragana
-      const end = h.slice(-1)
-      const stem = h.slice(0, -1)
-      const aMap: Record<string, string> = {
-        う: "わ",
-        く: "か",
-        ぐ: "が",
-        す: "さ",
-        つ: "た",
-        ぬ: "な",
-        ぶ: "ば",
-        む: "ま",
-        る: "ら",
-      }
-      neg = stem + (aMap[end] || "") + "ない"
-    }
-  }
-  if (!neg) return "" // fallback
-  return neg.endsWith("ない") ? neg.slice(0, -2) + "なかった" : neg + "なかった"
+  // Use our rule-based negative form derivation
+  const neg = deriveNegativeForm(verb);
+  if (!neg) return ''; // fallback
+  return neg.endsWith('ない')
+    ? neg.slice(0, -2) + 'なかった'
+    : neg + 'なかった';
 }
 
 function getPoliteFormHint(verb: Verb): TransformationHint {
-  const { type, hiragana } = verb
+  const { type, hiragana } = verb;
 
   switch (type) {
-    case "ichidan":
+    case 'ichidan':
       return {
         step1: `1. Identify: ${hiragana} is an ichidan verb (ends in る)`,
         step2: `2. Remove る to get the stem: ${hiragana.slice(0, -1)}`,
         step3: `3. Add ます → ${hiragana.slice(0, -1)}ます`,
-        rule: "Ichidan polite: る → ます",
+        rule: 'Ichidan polite: る → ます',
         example: `${hiragana} → ${hiragana.slice(0, -1)}ます`,
-      }
-    case "irregular":
-      if (hiragana === "する") {
+      };
+    case 'irregular':
+      if (hiragana === 'する') {
         return {
-          step1: "1. Identify: する irregular",
-          step2: "2. する → します",
-          rule: "Irregular: する → します",
-          example: "する → します",
-        }
-      } else if (hiragana === "くる") {
+          step1: '1. Identify: する irregular',
+          step2: '2. する → します',
+          rule: 'Irregular: する → します',
+          example: 'する → します',
+        };
+      } else if (hiragana === 'くる') {
         return {
-          step1: "1. Identify: くる irregular",
-          step2: "2. くる → きます",
-          rule: "Irregular: くる → きます",
-          example: "くる → きます",
-        }
-      } else if (hiragana === "いく") {
+          step1: '1. Identify: くる irregular',
+          step2: '2. くる → きます',
+          rule: 'Irregular: くる → きます',
+          example: 'くる → きます',
+        };
+      } else if (hiragana === 'いく') {
         return {
-          step1: "1. Identify: いく (acts regular for polite)",
-          step2: "2. いく → いき + ます",
-          rule: "Polite: stem (き) + ます",
-          example: "いく → いきます",
-        }
-      } else if (hiragana === "ある") {
+          step1: '1. Identify: いく (acts regular for polite)',
+          step2: '2. いく → いき + ます',
+          rule: 'Polite: stem (き) + ます',
+          example: 'いく → いきます',
+        };
+      } else if (hiragana === 'ある') {
         return {
-          step1: "1. Identify: ある irregular",
-          step2: "2. ある → あり + ます",
-          rule: "Irregular: ある → あります",
-          example: "ある → あります",
-        }
-      } else if (hiragana.endsWith("する")) {
+          step1: '1. Identify: ある irregular',
+          step2: '2. ある → あり + ます',
+          rule: 'Irregular: ある → あります',
+          example: 'ある → あります',
+        };
+      } else if (hiragana.endsWith('する')) {
         return {
           step1: `1. Identify: ${hiragana} is a する compound`,
           step2: `2. Replace する with します`,
-          rule: "Compound: する → します",
+          rule: 'Compound: する → します',
           example: `${hiragana} → ${hiragana.slice(0, -2)}します`,
-        }
+        };
       }
       return {
         step1: `1. Identify: irregular verb`,
         step2: `2. Memorize polite form`,
-        rule: "Irregular polite form",
+        rule: 'Irregular polite form',
         example: `${hiragana} → ${derivePoliteForm(verb)}`,
-      }
-    case "godan":
-      const end = hiragana.slice(-1)
-      const stem = hiragana.slice(0, -1)
+      };
+    case 'godan': {
+      const end = hiragana.slice(-1);
+      const stem = hiragana.slice(0, -1);
       const mapping: Record<string, { i: string; example: string }> = {
-        う: { i: "い", example: "う → い" },
-        く: { i: "き", example: "く → き" },
-        ぐ: { i: "ぎ", example: "ぐ → ぎ" },
-        す: { i: "し", example: "す → し" },
-        つ: { i: "ち", example: "つ → ち" },
-        ぬ: { i: "に", example: "ぬ → に" },
-        ぶ: { i: "び", example: "ぶ → び" },
-        む: { i: "み", example: "む → み" },
-        る: { i: "り", example: "る → り" },
-      }
-      const info = mapping[end]
+        う: { i: 'い', example: 'う → い' },
+        く: { i: 'き', example: 'く → き' },
+        ぐ: { i: 'ぎ', example: 'ぐ → ぎ' },
+        す: { i: 'し', example: 'す → し' },
+        つ: { i: 'ち', example: 'つ → ち' },
+        ぬ: { i: 'に', example: 'ぬ → に' },
+        ぶ: { i: 'び', example: 'ぶ → び' },
+        む: { i: 'み', example: 'む → み' },
+        る: { i: 'り', example: 'る → り' },
+      };
+      const info = mapping[end];
       if (info) {
         return {
           step1: `1. Identify: ${hiragana} is a godan verb (ends in ${end})`,
           step2: `2. Change ${end} to its い-row (${
-            info.example.split(" → ")[1]
+            info.example.split(' → ')[1]
           }) to form the stem: ${stem}${info.i}`,
           step3: `3. Add ます → ${stem}${info.i}ます`,
-          rule: "Godan polite: final syllable → い-row + ます",
+          rule: 'Godan polite: final syllable → い-row + ます',
           example: `${hiragana} → ${stem}${info.i}ます`,
-        }
+        };
       }
       return {
         step1: `1. Identify: godan verb`,
         step2: `2. Change final syllable to い-row + ます`,
-        rule: "Godan polite formation",
+        rule: 'Godan polite formation',
         example: `${hiragana} → ${derivePoliteForm(verb)}`,
-      }
+      };
+    }
     default:
       return {
         step1: `1. Analyze: ${hiragana}`,
         step2: `2. Apply polite rule (stem + ます)`,
-        rule: "General polite rule",
+        rule: 'General polite rule',
         example: `${hiragana} → ${derivePoliteForm(verb)}`,
-      }
+      };
   }
 }
 
 function getPastPoliteFormHint(verb: Verb): TransformationHint {
-  const polite = derivePoliteForm(verb)
-  const pastPolite = derivePastPoliteForm(verb)
+  const polite = derivePoliteForm(verb);
+  const pastPolite = derivePastPoliteForm(verb);
   return {
     step1: `1. Form the polite (ます) form: ${polite}`,
     step2: `2. Replace ます with ました to make it past polite`,
     step3: `3. Result: ${pastPolite}`,
-    rule: "Past polite: polite form ます → ました",
+    rule: 'Past polite: polite form ます → ました',
     example: `${polite} → ${pastPolite}`,
-  }
+  };
 }
 
 function getPoliteNegativeFormHint(verb: Verb): TransformationHint {
-  const polite = derivePoliteForm(verb)
-  const politeNeg = derivePoliteNegativeForm(verb)
+  const polite = derivePoliteForm(verb);
+  const politeNeg = derivePoliteNegativeForm(verb);
   return {
     step1: `1. Form the polite (ます) form: ${polite}`,
     step2: `2. Replace ます with ません to make it negative polite`,
     step3: `3. Result: ${politeNeg}`,
-    rule: "Polite negative: ます → ません",
+    rule: 'Polite negative: ます → ません',
     example: `${polite} → ${politeNeg}`,
-  }
+  };
 }
 
 function getPastNegativeFormHint(verb: Verb): TransformationHint {
-  const { hiragana, type } = verb
-  const neg =
-    verb.negativeForm ||
-    derivePastNegativeForm({ ...verb, negativeForm: undefined })
-  const pastNeg = derivePastNegativeForm(verb)
+  const { hiragana, type } = verb;
+  const neg = deriveNegativeForm(verb);
+  const pastNeg = derivePastNegativeForm(verb);
   if (!neg || !pastNeg) {
     return {
       step1: `1. Form negative not available for ${hiragana}`,
       step2: `2. Cannot derive past negative`,
-      rule: "Missing negative base",
+      rule: 'Missing negative base',
       example: hiragana,
-    }
+    };
   }
 
-  let step1 = "1. Form the plain negative"
-  let step2 = "2. Replace ない with なかった"
-  let rule = "Past negative: ない → なかった"
-  let example = `${neg} → ${pastNeg}`
+  let step1 = '1. Form the plain negative';
+  const step2 = '2. Replace ない with なかった';
+  const rule = 'Past negative: ない → なかった';
+  const example = `${neg} → ${pastNeg}`;
 
-  if (type === "ichidan" && hiragana.endsWith("る")) {
-    step1 = `1. Ichidan: remove る add ない → ${hiragana.slice(0, -1)}ない`
-  } else if (type === "godan") {
-    const end = hiragana.slice(-1)
-    step1 = `1. Godan: change ${end} to its あ-row + ない → ${neg}`
-  } else if (type === "irregular") {
-    step1 = `1. Irregular negative (memorize): ${neg}`
+  if (type === 'ichidan' && hiragana.endsWith('る')) {
+    step1 = `1. Ichidan: remove る add ない → ${hiragana.slice(0, -1)}ない`;
+  } else if (type === 'godan') {
+    const end = hiragana.slice(-1);
+    step1 = `1. Godan: change ${end} to its あ-row + ない → ${neg}`;
+  } else if (type === 'irregular') {
+    step1 = `1. Irregular negative (memorize): ${neg}`;
   }
 
   return {
@@ -374,349 +440,354 @@ function getPastNegativeFormHint(verb: Verb): TransformationHint {
     step3: `3. Result: ${pastNeg}`,
     rule,
     example,
-  }
+  };
 }
 
 function getPastPoliteNegativeFormHint(verb: Verb): TransformationHint {
-  const polite = derivePoliteForm(verb)
-  const politeNeg = derivePoliteNegativeForm(verb)
-  const pastPoliteNeg = derivePastPoliteNegativeForm(verb)
+  const polite = derivePoliteForm(verb);
+  const politeNeg = derivePoliteNegativeForm(verb);
+  const pastPoliteNeg = derivePastPoliteNegativeForm(verb);
   return {
     step1: `1. Form the polite (ます) form: ${polite}`,
     step2: `2. Make it negative: ます → ません → ${politeNeg}`,
     step3: `3. Add でした to mark past: ${politeNeg} → ${pastPoliteNeg}`,
-    rule: "Past polite negative: ます → ません → ませんでした",
+    rule: 'Past polite negative: ます → ません → ませんでした',
     example: `${polite} → ${politeNeg} → ${pastPoliteNeg}`,
-  }
+  };
 }
 
 function getTeFormHint(verb: Verb): TransformationHint {
-  const { type, hiragana, teForm, endingGroup } = verb
+  const { type, hiragana, endingGroup } = verb;
+  const teForm = deriveTeForm(verb);
 
   switch (type) {
-    case "ichidan":
+    case 'ichidan':
       return {
         step1: `1. Identify: ${hiragana} is an ichidan verb (ends in る)`,
         step2: `2. Remove る from ${hiragana}`,
         step3: `3. Add て to get ${teForm}`,
-        rule: "Ichidan Rule: Remove る and add て",
+        rule: 'Ichidan Rule: Remove る and add て',
         example: `${hiragana} → ${hiragana.slice(0, -1)}て = ${teForm}`,
-      }
+      };
 
-    case "irregular":
-      if (hiragana === "する") {
+    case 'irregular':
+      if (hiragana === 'する') {
         return {
           step1: `1. Identify: ${hiragana} is an irregular verb`,
           step2: `2. Special transformation: する → して`,
-          rule: "Irregular Rule: する becomes して",
+          rule: 'Irregular Rule: する becomes して',
           example: `${hiragana} → ${teForm}`,
-        }
-      } else if (hiragana === "くる") {
+        };
+      } else if (hiragana === 'くる') {
         return {
           step1: `1. Identify: ${hiragana} is an irregular verb`,
           step2: `2. Special transformation: くる → きて`,
-          rule: "Irregular Rule: くる becomes きて",
+          rule: 'Irregular Rule: くる becomes きて',
           example: `${hiragana} → ${teForm}`,
-        }
-      } else if (hiragana === "いく") {
+        };
+      } else if (hiragana === 'いく') {
         return {
           step1: `1. Identify: ${hiragana} is an irregular verb`,
           step2: `2. Special transformation: いく → いって`,
-          rule: "Irregular Rule: いく becomes いって (special case)",
+          rule: 'Irregular Rule: いく becomes いって (special case)',
           example: `${hiragana} → ${teForm}`,
-        }
-      } else if (hiragana.endsWith("する")) {
+        };
+      } else if (hiragana.endsWith('する')) {
         return {
           step1: `1. Identify: ${hiragana} is a compound verb with する`,
           step2: `2. Change する to して`,
-          rule: "Compound Rule: Replace する with して",
+          rule: 'Compound Rule: Replace する with して',
           example: `${hiragana} → ${hiragana.slice(0, -2)}して = ${teForm}`,
-        }
+        };
       } else {
         return {
           step1: `1. Identify: ${hiragana} is an irregular verb`,
           step2: `2. Special form: ${teForm}`,
-          rule: "Irregular Rule: Must be memorized",
+          rule: 'Irregular Rule: Must be memorized',
           example: `${hiragana} → ${teForm}`,
-        }
+        };
       }
 
-    case "godan":
+    case 'godan':
       switch (endingGroup) {
-        case "mu":
+        case 'mu':
           return {
             step1: `1. Identify: ${hiragana} ends in む (godan verb)`,
             step2: `2. Change む to ん`,
             step3: `3. Add で to get ${teForm}`,
-            rule: "む → んで rule (sound convenience: /m/ + て → んで)",
+            rule: 'む → んで rule (sound convenience: /m/ + て → んで)',
             example: `${hiragana} → ${hiragana.slice(0, -1)}んで = ${teForm}`,
-          }
+          };
 
-        case "bu":
+        case 'bu':
           return {
             step1: `1. Identify: ${hiragana} ends in ぶ (godan verb)`,
             step2: `2. Change ぶ to ん`,
             step3: `3. Add で to get ${teForm}`,
-            rule: "ぶ → んで rule (sound convenience: /b/ + て → んで)",
+            rule: 'ぶ → んで rule (sound convenience: /b/ + て → んで)',
             example: `${hiragana} → ${hiragana.slice(0, -1)}んで = ${teForm}`,
-          }
+          };
 
-        case "nu":
+        case 'nu':
           return {
             step1: `1. Identify: ${hiragana} ends in ぬ (godan verb)`,
             step2: `2. Change ぬ to ん`,
             step3: `3. Add で to get ${teForm}`,
-            rule: "ぬ → んで rule (sound convenience: /n/ + て → んde)",
+            rule: 'ぬ → んで rule (sound convenience: /n/ + て → んde)',
             example: `${hiragana} → ${hiragana.slice(0, -1)}んで = ${teForm}`,
-          }
+          };
 
-        case "ku":
+        case 'ku':
           return {
             step1: `1. Identify: ${hiragana} ends in く (godan verb)`,
             step2: `2. Change く to い`,
             step3: `3. Add て to get ${teForm}`,
-            rule: "く → いて rule (consonant removal: /k/ → /i/ + て)",
+            rule: 'く → いて rule (consonant removal: /k/ → /i/ + て)',
             example: `${hiragana} → ${hiragana.slice(0, -1)}いて = ${teForm}`,
-          }
+          };
 
-        case "gu":
+        case 'gu':
           return {
             step1: `1. Identify: ${hiragana} ends in ぐ (godan verb)`,
             step2: `2. Change ぐ to い`,
             step3: `3. Add で to get ${teForm}`,
-            rule: "ぐ → いで rule (consonant removal: /g/ → /i/ + で)",
+            rule: 'ぐ → いで rule (consonant removal: /g/ → /i/ + で)',
             example: `${hiragana} → ${hiragana.slice(0, -1)}いで = ${teForm}`,
-          }
+          };
 
-        case "su":
+        case 'su':
           return {
             step1: `1. Identify: ${hiragana} ends in す (godan verb)`,
             step2: `2. Change す to し`,
             step3: `3. Add て to get ${teForm}`,
-            rule: "す → して rule (direct substitution)",
+            rule: 'す → して rule (direct substitution)',
             example: `${hiragana} → ${hiragana.slice(0, -1)}して = ${teForm}`,
-          }
+          };
 
-        case "tsu":
+        case 'tsu':
           return {
             step1: `1. Identify: ${hiragana} ends in つ (godan verb)`,
             step2: `2. Change つ to っ`,
             step3: `3. Add て to get ${teForm}`,
-            rule: "つ → って rule (double consonant: /t/ + て → って)",
+            rule: 'つ → って rule (double consonant: /t/ + て → って)',
             example: `${hiragana} → ${hiragana.slice(0, -1)}って = ${teForm}`,
-          }
+          };
 
-        case "u":
+        case 'u':
           return {
             step1: `1. Identify: ${hiragana} ends in う (godan verb)`,
             step2: `2. Change う to っ`,
             step3: `3. Add て to get ${teForm}`,
-            rule: "う → って rule (historical /w/ sound + て → って)",
+            rule: 'う → って rule (historical /w/ sound + て → って)',
             example: `${hiragana} → ${hiragana.slice(0, -1)}って = ${teForm}`,
-          }
+          };
 
-        case "ru":
+        case 'ru':
           return {
             step1: `1. Identify: ${hiragana} ends in る (godan verb - NOT ichidan!)`,
             step2: `2. Change る to っ`,
             step3: `3. Add て to get ${teForm}`,
-            rule: "Godan る → って rule (different from ichidan verbs)",
+            rule: 'Godan る → って rule (different from ichidan verbs)',
             example: `${hiragana} → ${hiragana.slice(0, -1)}って = ${teForm}`,
-          }
+          };
 
         default:
           return {
             step1: `1. Identify: ${hiragana} is a godan verb`,
             step2: `2. Apply godan conjugation pattern`,
-            rule: "Godan Rule: Follow specific ending patterns",
+            rule: 'Godan Rule: Follow specific ending patterns',
             example: `${hiragana} → ${teForm}`,
-          }
+          };
       }
 
     default:
       return {
         step1: `1. Analyze the verb: ${hiragana}`,
         step2: `2. Apply appropriate rule`,
-        rule: "General conjugation rule",
+        rule: 'General conjugation rule',
         example: `${hiragana} → ${teForm}`,
-      }
+      };
   }
 }
 
 function getNegativeFormHint(verb: Verb): TransformationHint {
-  const { type, hiragana, negativeForm } = verb
+  const { type, hiragana } = verb;
+  const negativeForm = deriveNegativeForm(verb);
 
   if (!negativeForm) {
     return {
       step1: `1. Negative form for ${hiragana} not available yet`,
       step2: `2. This verb needs negative form data`,
-      rule: "Negative form coming soon",
-      example: "Data being added progressively",
-    }
+      rule: 'Negative form coming soon',
+      example: 'Data being added progressively',
+    };
   }
 
   switch (type) {
-    case "ichidan":
+    case 'ichidan':
       return {
         step1: `1. Identify: ${hiragana} is an ichidan verb (ends in る)`,
         step2: `2. Remove る from ${hiragana}`,
         step3: `3. Add ない to get ${negativeForm}`,
-        rule: "Ichidan Rule: Remove る and add ない",
+        rule: 'Ichidan Rule: Remove る and add ない',
         example: `${hiragana} → ${hiragana.slice(0, -1)}ない = ${negativeForm}`,
-      }
+      };
 
-    case "irregular":
-      if (hiragana === "する") {
+    case 'irregular':
+      if (hiragana === 'する') {
         return {
           step1: `1. Identify: ${hiragana} is an irregular verb`,
           step2: `2. Special transformation: する → しない`,
-          rule: "Irregular Rule: する becomes しない",
+          rule: 'Irregular Rule: する becomes しない',
           example: `${hiragana} → ${negativeForm}`,
-        }
-      } else if (hiragana === "くる") {
+        };
+      } else if (hiragana === 'くる') {
         return {
           step1: `1. Identify: ${hiragana} is an irregular verb`,
           step2: `2. Special transformation: くる → こない`,
-          rule: "Irregular Rule: くる becomes こない",
+          rule: 'Irregular Rule: くる becomes こない',
           example: `${hiragana} → ${negativeForm}`,
-        }
-      } else if (hiragana.endsWith("する")) {
+        };
+      } else if (hiragana.endsWith('する')) {
         return {
           step1: `1. Identify: ${hiragana} is a compound verb with する`,
           step2: `2. Change する to しない`,
-          rule: "Compound Rule: Replace する with しない",
+          rule: 'Compound Rule: Replace する with しない',
           example: `${hiragana} → ${hiragana.slice(
             0,
-            -2
+            -2,
           )}しない = ${negativeForm}`,
-        }
+        };
       } else {
         return {
           step1: `1. Identify: ${hiragana} is an irregular verb`,
           step2: `2. Special form: ${negativeForm}`,
-          rule: "Irregular Rule: Must be memorized",
+          rule: 'Irregular Rule: Must be memorized',
           example: `${hiragana} → ${negativeForm}`,
-        }
+        };
       }
 
-    case "godan":
-      const ending = hiragana.slice(-1)
+    case 'godan': {
+      const ending = hiragana.slice(-1);
 
       return {
         step1: `1. Identify: ${hiragana} is a godan verb (ends in ${ending})`,
         step2: `2. Change ${ending} to あ-sound + ない`,
         step3: `3. Result: ${negativeForm}`,
-        rule: "Godan Rule: Change to あ-column + ない",
+        rule: 'Godan Rule: Change to あ-column + ない',
         example: `${hiragana} → ${negativeForm}`,
-      }
+      };
+    }
 
     default:
       return {
         step1: `1. Analyze the verb: ${hiragana}`,
         step2: `2. Apply negative conjugation rule`,
-        rule: "General negative rule",
+        rule: 'General negative rule',
         example: `${hiragana} → ${negativeForm}`,
-      }
+      };
   }
 }
 
 function getPastTenseHint(verb: Verb): TransformationHint {
-  const { type, hiragana, pastTenseForm, endingGroup } = verb
+  const { type, hiragana, endingGroup } = verb;
+  const pastTenseForm = derivePastTenseForm(verb);
 
   if (!pastTenseForm) {
     return {
       step1: `1. Past tense for ${hiragana} not available yet`,
-      step2: "2. This verb needs past tense data",
-      rule: "Past tense form missing",
-      example: "Data being added",
-    }
+      step2: '2. This verb needs past tense data',
+      rule: 'Past tense form missing',
+      example: 'Data being added',
+    };
   }
 
   switch (type) {
-    case "ichidan":
+    case 'ichidan':
       return {
         step1: `1. Identify: ${hiragana} is an ichidan verb (ends in る)`,
         step2: `2. Remove る and add た to get ${pastTenseForm}`,
-        rule: "Ichidan past tense: る → た",
+        rule: 'Ichidan past tense: る → た',
         example: `${hiragana} → ${hiragana.slice(0, -1)}た = ${pastTenseForm}`,
-      }
-    case "irregular":
-      if (hiragana === "する") {
+      };
+    case 'irregular':
+      if (hiragana === 'する') {
         return {
-          step1: "1. Identify: する irregular",
-          step2: "2. する → した",
-          rule: "Irregular: する → した",
+          step1: '1. Identify: する irregular',
+          step2: '2. する → した',
+          rule: 'Irregular: する → した',
           example: `する → した`,
-        }
-      } else if (hiragana === "くる") {
+        };
+      } else if (hiragana === 'くる') {
         return {
-          step1: "1. Identify: くる irregular",
-          step2: "2. くる → きた",
-          rule: "Irregular: くる → きた",
+          step1: '1. Identify: くる irregular',
+          step2: '2. くる → きた',
+          rule: 'Irregular: くる → きた',
           example: `くる → きた`,
-        }
-      } else if (hiragana === "いく") {
+        };
+      } else if (hiragana === 'いく') {
         return {
-          step1: "1. Identify: いく special irregular",
-          step2: "2. いく → いった",
-          rule: "Special: いく → いった",
+          step1: '1. Identify: いく special irregular',
+          step2: '2. いく → いった',
+          rule: 'Special: いく → いった',
           example: `いく → いった`,
-        }
-      } else if (hiragana.endsWith("する")) {
+        };
+      } else if (hiragana.endsWith('する')) {
         return {
           step1: `1. Identify: ${hiragana} is a する compound`,
           step2: `2. Replace する with した`,
-          rule: "Compound: する → した",
+          rule: 'Compound: する → した',
           example: `${hiragana} → ${hiragana.slice(
             0,
-            -2
+            -2,
           )}した = ${pastTenseForm}`,
-        }
+        };
       } else {
         return {
           step1: `1. Identify: irregular verb`,
           step2: `2. Memorize form: ${pastTenseForm}`,
-          rule: "Irregular: must memorize",
+          rule: 'Irregular: must memorize',
           example: `${hiragana} → ${pastTenseForm}`,
-        }
+        };
       }
-    case "godan":
+    case 'godan': {
       if (!endingGroup) {
         return {
           step1: `1. Identify: godan verb`,
           step2: `2. Apply ending group rule`,
-          rule: "Godan past: use ending rule",
+          rule: 'Godan past: use ending rule',
           example: `${hiragana} → ${pastTenseForm}`,
-        }
+        };
       }
       // Summarize rule from pastTenseRules
       const godanMap = pastTenseRules.godan as Record<
         string,
         { pattern: string; replacement: string; description: string }
-      >
-      const rule = godanMap[endingGroup]
+      >;
+      const rule = godanMap[endingGroup];
       if (!rule) {
         return {
           step1: `1. Identify: ${hiragana} (godan)`,
           step2: `2. Use memorized past: ${pastTenseForm}`,
-          rule: "Fallback: unspecified godan ending",
+          rule: 'Fallback: unspecified godan ending',
           example: `${hiragana} → ${pastTenseForm}`,
-        }
+        };
       }
       return {
         step1: `1. Identify: ${hiragana} ends in ${rule.pattern}`,
         step2: `2. Replace ${rule.pattern} with ${rule.replacement}`,
-        rule: rule.description.replace("For verbs ending in", "Past tense:"),
+        rule: rule.description.replace('For verbs ending in', 'Past tense:'),
         example: `${hiragana} → ${hiragana.slice(0, -1)}${
           rule.replacement
         } = ${pastTenseForm}`,
-      }
+      };
+    }
     default:
       return {
         step1: `1. Analyze: ${hiragana}`,
         step2: `2. Apply past tense rule`,
-        rule: "General past tense rule",
+        rule: 'General past tense rule',
         example: `${hiragana} → ${pastTenseForm}`,
-      }
+      };
   }
 }

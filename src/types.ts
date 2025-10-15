@@ -1,61 +1,67 @@
-export type VerbType = "ichidan" | "godan" | "irregular"
+export type VerbType = 'ichidan' | 'godan' | 'irregular';
 export type ConjugationType =
-  | "te-form"
-  | "negative"
-  | "past"
-  | "polite"
-  | "past-polite"
-  | "polite-negative"
-  | "past-polite-negative"
-  | "past-negative"
+  | 'te-form'
+  | 'negative'
+  | 'past'
+  | 'polite'
+  | 'past-polite'
+  | 'polite-negative'
+  | 'past-polite-negative'
+  | 'past-negative';
 
 export interface Verb {
-  kanji: string
-  hiragana: string
-  romaji: string
-  type: VerbType
-  teForm: string
-  negativeForm?: string
-  pastTenseForm?: string // New property for past tense conjugations
+  kanji: string;
+  hiragana: string;
+  romaji: string;
+  type: VerbType;
+  teForm?: string; // Now optional - derived from rules
+  negativeForm?: string; // Optional - derived from rules
+  pastTenseForm?: string; // Optional - derived from rules
   // We derive polite (～ます) form dynamically, so no stored property required
-  meaning: string
-  endingGroup?: string // For godan verbs (u, ku, gu, su, tsu, nu, bu, mu, ru)
+  meaning: string;
+  endingGroup?: string; // For godan verbs (u, ku, gu, su, tsu, nu, bu, mu, ru)
 }
 
 export interface TransformationHint {
-  step1: string
-  step2: string
-  step3?: string
-  rule: string
-  example: string
+  step1: string;
+  step2: string;
+  step3?: string;
+  rule: string;
+  example: string;
 }
 
 export interface ConjugationRule {
-  pattern: string
-  replacement: string
-  description: string
+  pattern: string;
+  replacement: string;
+  description: string;
 }
 
 export interface GameState {
-  currentVerb: Verb | null
-  currentConjugationType: ConjugationType
-  userAnswer: string
-  isCorrect: boolean | null
-  showExplanation: boolean
-  showHint: boolean
-  score: number
-  totalAttempts: number
-  correctAnswers: number
+  currentVerb: Verb | null;
+  currentConjugationType: ConjugationType;
+  userAnswer: string;
+  isCorrect: boolean | null;
+  showExplanation: boolean;
+  showHint: boolean;
+  score: number;
+  totalAttempts: number;
+  correctAnswers: number;
 }
 
 export interface TeFormRules {
-  ichidan: ConjugationRule
-  irregular: { [key: string]: ConjugationRule }
-  godan: { [key: string]: ConjugationRule }
+  ichidan: ConjugationRule;
+  irregular: { [key: string]: ConjugationRule };
+  godan: { [key: string]: ConjugationRule };
 }
 
 export interface NegativeFormRules {
-  ichidan: ConjugationRule
-  irregular: { [key: string]: ConjugationRule }
-  godan: { [key: string]: ConjugationRule }
+  ichidan: ConjugationRule;
+  irregular: { [key: string]: ConjugationRule };
+  godan: { [key: string]: ConjugationRule };
+}
+
+export interface PastTenseRules {
+  ichidan: ConjugationRule;
+  irregular: { [key: string]: ConjugationRule };
+  godan: { [key: string]: ConjugationRule };
 }
