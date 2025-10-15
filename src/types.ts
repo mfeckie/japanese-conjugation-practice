@@ -59,3 +59,9 @@ export interface NegativeFormRules {
   irregular: { [key: string]: ConjugationRule };
   godan: { [key: string]: ConjugationRule };
 }
+
+export interface PastTenseRules {
+  ichidan: ConjugationRule;
+  irregular: { [key: string]: ConjugationRule };
+  godan: { [key: string]: ConjugationRule };
+}

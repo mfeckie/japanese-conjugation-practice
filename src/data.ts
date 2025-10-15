@@ -1,4 +1,9 @@
-import type { NegativeFormRules, TeFormRules, Verb } from './types';
+import type {
+  NegativeFormRules,
+  TeFormRules,
+  PastTenseRules,
+  Verb,
+} from './types';
 
 export const teFormRules: TeFormRules = {
   ichidan: {
@@ -154,7 +159,7 @@ export const negativeFormRules: NegativeFormRules = {
   },
 };
 
-export const pastTenseRules = {
+export const pastTenseRules: PastTenseRules = {
   ichidan: {
     pattern: 'る',
     replacement: 'た',
