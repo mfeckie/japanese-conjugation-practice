@@ -138,6 +138,10 @@ export function deriveTeForm(verb: Verb): string {
     if (rule) {
       return hiragana.replace(rule.pattern, rule.replacement);
     }
+    // Handle compound する verbs (e.g., りょこうする → りょこうして)
+    if (hiragana.endsWith('する')) {
+      return `${hiragana.slice(0, -2)}して`;
+    }
   } else if (type === 'godan' && endingGroup) {
     // Apply godan rule based on ending group
     const rule = teFormRules.godan[endingGroup];
@@ -164,6 +168,10 @@ export function deriveNegativeForm(verb: Verb): string {
     if (rule) {
       return hiragana.replace(rule.pattern, rule.replacement);
     }
+    // Handle compound する verbs (e.g., りょこうする → りょこうしない)
+    if (hiragana.endsWith('する')) {
+      return `${hiragana.slice(0, -2)}しない`;
+    }
   } else if (type === 'godan' && endingGroup) {
     // Apply godan rule based on ending group
     const rule = negativeFormRules.godan[endingGroup];
@@ -189,6 +197,10 @@ export function derivePastTenseForm(verb: Verb): string {
     const rule = pastTenseRules.irregular[hiragana];
     if (rule) {
       return hiragana.replace(rule.pattern, rule.replacement);
+    }
+    // Handle compound する verbs (e.g., りょこうする → りょこうした)
+    if (hiragana.endsWith('する')) {
+      return `${hiragana.slice(0, -2)}した`;
     }
   } else if (type === 'godan' && endingGroup) {
     // Apply godan rule based on ending group
