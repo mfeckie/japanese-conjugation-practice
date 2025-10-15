@@ -176,6 +176,11 @@ export const pastTenseRules = {
       replacement: 'いった',
       description: 'いく becomes いった (irregular)',
     },
+    ある: {
+      pattern: 'ある',
+      replacement: 'あった',
+      description: 'ある becomes あった (irregular)',
+    },
   },
   godan: {
     u: {

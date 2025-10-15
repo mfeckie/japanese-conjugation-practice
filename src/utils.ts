@@ -1,4 +1,4 @@
-import { pastTenseRules, teFormRules, verbs } from './data';
+import { negativeFormRules, pastTenseRules, teFormRules, verbs } from './data';
 import type {
   ConjugationType,
   TransformationHint,
@@ -16,11 +16,11 @@ export function getCorrectAnswer(
 ): string {
   switch (conjugationType) {
     case 'te-form':
-      return verb.teForm;
+      return deriveTeForm(verb);
     case 'negative':
-      return verb.negativeForm || '';
+      return deriveNegativeForm(verb);
     case 'past':
-      return verb.pastTenseForm || '';
+      return derivePastTenseForm(verb);
     case 'polite':
       return derivePoliteForm(verb);
     case 'past-polite':
@@ -42,7 +42,7 @@ export function checkAnswer(
   conjugationType: ConjugationType,
 ): boolean {
   const correctAnswer = getCorrectAnswer(verb, conjugationType);
-  return userAnswer.trim() === correctAnswer;
+  return userAnswer.trim() === correctAnswer.trim();
 }
 
 export function getExplanation(verb: Verb): string {
@@ -122,6 +122,85 @@ export function getTransformationHint(
   };
 }
 
+// --- Rule-based conjugation derivation ---
+export function deriveTeForm(verb: Verb): string {
+  const { hiragana, type, endingGroup } = verb;
+
+  if (type === 'ichidan') {
+    // Apply ichidan rule: remove る and add て
+    if (hiragana.endsWith('る')) {
+      return `${hiragana.slice(0, -1)}て`;
+    }
+  } else if (type === 'irregular') {
+    // Check for irregular rules
+    const rule = teFormRules.irregular[hiragana];
+    if (rule) {
+      return hiragana.replace(rule.pattern, rule.replacement);
+    }
+  } else if (type === 'godan' && endingGroup) {
+    // Apply godan rule based on ending group
+    const rule = teFormRules.godan[endingGroup];
+    if (rule) {
+      return `${hiragana.slice(0, -rule.pattern.length)}${rule.replacement}`;
+    }
+  }
+
+  // Fallback to existing hardcoded value if rules don't work
+  return verb.teForm;
+}
+
+export function deriveNegativeForm(verb: Verb): string {
+  const { hiragana, type, endingGroup } = verb;
+
+  if (type === 'ichidan') {
+    // Apply ichidan rule: remove る and add ない
+    if (hiragana.endsWith('る')) {
+      return `${hiragana.slice(0, -1)}ない`;
+    }
+  } else if (type === 'irregular') {
+    // Check for irregular rules
+    const rule = negativeFormRules.irregular[hiragana];
+    if (rule) {
+      return hiragana.replace(rule.pattern, rule.replacement);
+    }
+  } else if (type === 'godan' && endingGroup) {
+    // Apply godan rule based on ending group
+    const rule = negativeFormRules.godan[endingGroup];
+    if (rule) {
+      return `${hiragana.slice(0, -rule.pattern.length)}${rule.replacement}`;
+    }
+  }
+
+  // Fallback to existing hardcoded value if rules don't work
+  return verb.negativeForm || '';
+}
+
+export function derivePastTenseForm(verb: Verb): string {
+  const { hiragana, type, endingGroup } = verb;
+
+  if (type === 'ichidan') {
+    // Apply ichidan rule: remove る and add た
+    if (hiragana.endsWith('る')) {
+      return `${hiragana.slice(0, -1)}た`;
+    }
+  } else if (type === 'irregular') {
+    // Check for irregular rules
+    const rule = pastTenseRules.irregular[hiragana];
+    if (rule) {
+      return hiragana.replace(rule.pattern, rule.replacement);
+    }
+  } else if (type === 'godan' && endingGroup) {
+    // Apply godan rule based on ending group
+    const rule = pastTenseRules.godan[endingGroup];
+    if (rule) {
+      return `${hiragana.slice(0, -rule.pattern.length)}${rule.replacement}`;
+    }
+  }
+
+  // Fallback to existing hardcoded value if rules don't work
+  return verb.pastTenseForm || '';
+}
+
 // --- Polite (～ます) form derivation ---
 function derivePoliteForm(verb: Verb): string {
   const { hiragana, type } = verb;
@@ -185,38 +264,8 @@ function derivePastPoliteNegativeForm(verb: Verb): string {
 
 // Plain past negative (〜なかった)
 function derivePastNegativeForm(verb: Verb): string {
-  // Build from dictionary negative form if available, else attempt to construct
-  let neg = verb.negativeForm;
-  if (!neg) {
-    // Attempt on-the-fly: ichidan remove る add ない; godan approximate by replacing final syllable with its あ-row + ない
-    const { hiragana, type } = verb;
-    if (type === 'ichidan' && hiragana.endsWith('る')) {
-      neg = hiragana.slice(0, -1) + 'ない';
-    } else if (type === 'irregular') {
-      if (hiragana === 'する') neg = 'しない';
-      else if (hiragana === 'くる') neg = 'こない';
-      else if (hiragana === 'いく') neg = 'いかない';
-      else if (hiragana === 'ある') neg = 'ない';
-      else if (hiragana.endsWith('する'))
-        neg = hiragana.slice(0, -2) + 'しない';
-    } else if (type === 'godan') {
-      const h = verb.hiragana;
-      const end = h.slice(-1);
-      const stem = h.slice(0, -1);
-      const aMap: Record<string, string> = {
-        う: 'わ',
-        く: 'か',
-        ぐ: 'が',
-        す: 'さ',
-        つ: 'た',
-        ぬ: 'な',
-        ぶ: 'ば',
-        む: 'ま',
-        る: 'ら',
-      };
-      neg = stem + (aMap[end] || '') + 'ない';
-    }
-  }
+  // Use our rule-based negative form derivation
+  const neg = deriveNegativeForm(verb);
   if (!neg) return ''; // fallback
   return neg.endsWith('ない')
     ? neg.slice(0, -2) + 'なかった'
