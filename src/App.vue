@@ -1,16 +1,69 @@
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4"
+    class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100"
+    :class="{ 'pb-32': true }" 
   >
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-4xl mx-auto px-4">
       <!-- Header -->
-      <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 mb-2">
+      <div class="text-center py-4 md:py-8 mb-4 md:mb-8">
+        <h1 class="text-2xl md:text-4xl font-bold text-gray-800 mb-2">
           Japanese Form Practice
         </h1>
 
-        <!-- Conjugation Type Selector (Grouped) -->
-        <div class="mb-6 space-y-3 text-left">
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden mb-4">
+          <button
+            @click="showMobileMenu = !showMobileMenu"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors flex items-center justify-center mx-auto gap-2"
+          >
+            <span>{{ getCurrentConjugationLabel() }}</span>
+            <svg
+              :class="{ 'rotate-180': showMobileMenu }"
+              class="w-4 h-4 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile Dropdown Menu -->
+        <div
+          v-if="showMobileMenu"
+          class="md:hidden mb-6 bg-white rounded-lg shadow-lg p-4 mx-4"
+        >
+          <div
+            v-for="group in buttonGroups"
+            :key="group.label"
+            class="mb-4 last:mb-0"
+          >
+            <div
+              class="text-xs font-semibold uppercase tracking-wide text-gray-600 mb-2"
+            >
+              {{ group.label }}
+            </div>
+            <div class="grid grid-cols-1 gap-2">
+              <button
+                v-for="btn in group.items"
+                :key="btn.type"
+                @click="selectConjugationType(btn.type)"
+                :class="[
+                  'px-3 py-3 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500 text-left',
+                  gameState.currentConjugationType === btn.type
+                    ? btn.activeClass
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+                ]"
+              >
+                {{ btn.label }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desktop Conjugation Type Selector -->
+        <div class="hidden md:block mb-6 space-y-3 text-left">
           <div
             v-for="group in buttonGroups"
             :key="group.label"
@@ -40,20 +93,21 @@
           </div>
         </div>
 
-        <div class="flex justify-center gap-4 text-sm">
-          <div class="bg-white px-4 py-2 rounded-lg shadow">
+        <!-- Stats - Compact on Mobile -->
+        <div class="flex justify-center gap-2 md:gap-4 text-xs md:text-sm">
+          <div class="bg-white px-2 md:px-4 py-1 md:py-2 rounded-lg shadow">
             <span class="font-semibold text-green-600"
-              >Correct: {{ gameState.correctAnswers }}</span
+              ><span class="hidden sm:inline">Correct: </span>{{ gameState.correctAnswers }}</span
             >
           </div>
-          <div class="bg-white px-4 py-2 rounded-lg shadow">
+          <div class="bg-white px-2 md:px-4 py-1 md:py-2 rounded-lg shadow">
             <span class="font-semibold text-blue-600"
-              >Attempts: {{ gameState.totalAttempts }}</span
+              ><span class="hidden sm:inline">Attempts: </span>{{ gameState.totalAttempts }}</span
             >
           </div>
-          <div class="bg-white px-4 py-2 rounded-lg shadow">
+          <div class="bg-white px-2 md:px-4 py-1 md:py-2 rounded-lg shadow">
             <span class="font-semibold text-purple-600">
-              Accuracy:
+              <span class="hidden sm:inline">Accuracy: </span>
               {{
                 gameState.totalAttempts > 0
                   ? Math.round(
@@ -67,35 +121,35 @@
       </div>
 
       <!-- Game Area -->
-      <div class="bg-white rounded-xl shadow-xl p-8 mb-6">
-        <div v-if="gameState.currentVerb" class="space-y-6">
+      <div class="bg-white rounded-xl shadow-xl p-4 md:p-8 mb-6 md:mb-6">
+        <div v-if="gameState.currentVerb" class="space-y-4 md:space-y-6">
           <!-- Verb Display -->
           <div class="text-center">
-            <div class="mb-4">
+            <div class="mb-2 md:mb-4">
               <span
-                class="inline-block px-3 py-1 rounded-full text-sm font-medium mb-2"
+                class="inline-block px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium mb-2"
                 :class="getVerbTypeColor(gameState.currentVerb.type)"
               >
                 {{ gameState.currentVerb.type.toUpperCase() }}
               </span>
             </div>
-            <div class="text-6xl font-bold text-gray-800 mb-2 japanese-font">
+            <div class="text-4xl md:text-6xl font-bold text-gray-800 mb-2 japanese-font">
               {{ gameState.currentVerb.kanji }}
             </div>
-            <div class="text-2xl text-gray-600 mb-1">
+            <div class="text-xl md:text-2xl text-gray-600 mb-1">
               {{ gameState.currentVerb.hiragana }}
             </div>
-            <div class="text-lg text-gray-500 mb-2">
+            <div class="text-sm md:text-lg text-gray-500 mb-2">
               ({{ gameState.currentVerb.romaji }})
             </div>
-            <div class="text-base text-gray-700">
+            <div class="text-sm md:text-base text-gray-700">
               {{ gameState.currentVerb.meaning }}
             </div>
           </div>
 
           <!-- Question -->
           <div class="text-center">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+            <h2 class="text-lg md:text-2xl font-semibold text-gray-800 mb-4">
               Convert to
               {{
                 gameState.currentConjugationType === "te-form"
@@ -117,7 +171,7 @@
             </h2>
 
             <!-- Hint Section -->
-            <div class="mb-6">
+            <div class="mb-4 md:mb-6">
               <button
                 @click="gameState.showHint = !gameState.showHint"
                 class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors mb-4"
@@ -127,15 +181,15 @@
 
               <div
                 v-if="gameState.showHint && gameState.currentVerb"
-                class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg text-left max-w-2xl mx-auto"
+                class="bg-yellow-50 border-l-4 border-yellow-400 p-3 md:p-4 rounded-lg text-left max-w-2xl mx-auto"
               >
-                <h4 class="font-semibold text-yellow-800 mb-3">
+                <h4 class="font-semibold text-yellow-800 mb-3 text-sm md:text-base">
                   Step-by-Step Transformation:
                 </h4>
                 <div class="space-y-2 text-yellow-700">
                   <div class="flex items-start">
                     <span
-                      class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3"
+                      class="font-mono text-xs md:text-sm bg-yellow-200 px-2 py-1 rounded mr-3 leading-tight"
                       >{{
                         getTransformationHint(
                           gameState.currentVerb,
@@ -146,7 +200,7 @@
                   </div>
                   <div class="flex items-start">
                     <span
-                      class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3"
+                      class="font-mono text-xs md:text-sm bg-yellow-200 px-2 py-1 rounded mr-3 leading-tight"
                       >{{
                         getTransformationHint(
                           gameState.currentVerb,
@@ -165,7 +219,7 @@
                     class="flex items-start"
                   >
                     <span
-                      class="font-mono text-sm bg-yellow-200 px-2 py-1 rounded mr-3"
+                      class="font-mono text-xs md:text-sm bg-yellow-200 px-2 py-1 rounded mr-3 leading-tight"
                       >{{
                         getTransformationHint(
                           gameState.currentVerb,
@@ -175,9 +229,9 @@
                     >
                   </div>
                 </div>
-                <div class="mt-4 p-3 bg-yellow-100 rounded">
-                  <div class="font-semibold text-yellow-800 text-sm">Rule:</div>
-                  <div class="text-yellow-700 text-sm">
+                <div class="mt-3 md:mt-4 p-2 md:p-3 bg-yellow-100 rounded">
+                  <div class="font-semibold text-yellow-800 text-xs md:text-sm">Rule:</div>
+                  <div class="text-yellow-700 text-xs md:text-sm">
                     {{
                       getTransformationHint(
                         gameState.currentVerb,
@@ -186,11 +240,11 @@
                     }}
                   </div>
                 </div>
-                <div class="mt-2 p-3 bg-yellow-100 rounded">
-                  <div class="font-semibold text-yellow-800 text-sm">
+                <div class="mt-2 p-2 md:p-3 bg-yellow-100 rounded">
+                  <div class="font-semibold text-yellow-800 text-xs md:text-sm">
                     Example:
                   </div>
-                  <div class="text-yellow-600 text-sm font-mono">
+                  <div class="text-yellow-600 text-xs md:text-sm font-mono">
                     {{
                       getTransformationHint(
                         gameState.currentVerb,
@@ -202,8 +256,8 @@
               </div>
             </div>
 
-            <!-- Answer Input -->
-            <div class="max-w-md mx-auto">
+            <!-- Desktop Input Area -->
+            <div class="hidden md:block max-w-md mx-auto">
               <input
                 ref="inputRef"
                 @keyup.enter="handleEnterKey"
@@ -221,7 +275,7 @@
                 }"
               />
 
-              <!-- Check Answer Button -->
+              <!-- Check Answer Button (Desktop) -->
               <button
                 @click="checkUserAnswer"
                 :disabled="
@@ -238,12 +292,12 @@
           <div v-if="gameState.isCorrect !== null" class="text-center">
             <div
               v-if="gameState.isCorrect"
-              class="bg-green-100 border-l-4 border-green-500 p-4 rounded"
+              class="bg-green-100 border-l-4 border-green-500 p-3 md:p-4 rounded"
             >
-              <div class="text-2xl font-bold text-green-800 mb-2">
+              <div class="text-xl md:text-2xl font-bold text-green-800 mb-2">
                 ✅ Correct!
               </div>
-              <div class="text-lg text-green-700">
+              <div class="text-base md:text-lg text-green-700">
                 {{ gameState.currentVerb.hiragana }} →
                 {{
                   getCorrectAnswer(
@@ -256,16 +310,16 @@
 
             <div
               v-else
-              class="bg-red-100 border-l-4 border-red-500 p-4 rounded"
+              class="bg-red-100 border-l-4 border-red-500 p-3 md:p-4 rounded"
             >
-              <div class="text-2xl font-bold text-red-800 mb-2">
+              <div class="text-xl md:text-2xl font-bold text-red-800 mb-2">
                 ❌ Incorrect
               </div>
-              <div class="text-lg text-red-700 mb-2">
+              <div class="text-sm md:text-lg text-red-700 mb-2">
                 Your answer:
                 <span class="font-semibold">{{ gameState.userAnswer }}</span>
               </div>
-              <div class="text-lg text-red-700 mb-4">
+              <div class="text-sm md:text-lg text-red-700 mb-4">
                 Correct answer:
                 <span class="font-semibold japanese-font">{{
                   getCorrectAnswer(
@@ -286,16 +340,16 @@
               <!-- Explanation -->
               <div
                 v-if="gameState.showExplanation"
-                class="bg-blue-50 p-4 rounded-lg text-left"
+                class="bg-blue-50 p-3 md:p-4 rounded-lg text-left"
               >
-                <h4 class="font-semibold text-blue-800 mb-2">
+                <h4 class="font-semibold text-blue-800 mb-2 text-sm md:text-base">
                   Rule Explanation:
                 </h4>
-                <p class="text-blue-700 mb-3">
+                <p class="text-blue-700 mb-3 text-xs md:text-sm">
                   {{ getExplanation(gameState.currentVerb) }}
                 </p>
 
-                <div class="text-sm text-blue-600">
+                <div class="text-xs md:text-sm text-blue-600">
                   <strong
                     >{{
                       gameState.currentVerb.type.charAt(0).toUpperCase() +
@@ -311,7 +365,7 @@
               <div
                 class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded"
               >
-                <p class="text-yellow-800">
+                <p class="text-yellow-800 text-xs md:text-sm">
                   Please type the correct answer to continue:
                   <strong class="japanese-font">{{
                     getCorrectAnswer(
@@ -325,10 +379,10 @@
           </div>
 
           <!-- Next Button -->
-          <div v-if="gameState.isCorrect" class="text-center">
+          <div v-if="gameState.isCorrect" class="text-center pb-32 md:pb-0">
             <button
               @click="nextVerb"
-              class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors text-lg"
+              class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 md:px-8 rounded-lg transition-colors text-base md:text-lg"
             >
               Next Verb →
             </button>
@@ -341,6 +395,42 @@
         </div>
       </div>
     </div>
+
+    <!-- Sticky Bottom Input Area (Mobile) -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-lg safe-area-bottom">
+      <div class="p-4">
+        <div class="flex gap-3">
+          <input
+            ref="mobileInputRef"
+            @keyup.enter="handleEnterKey"
+            @keyup="updateGameState"
+            @input="filterHiraganaInput"
+            type="text"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            placeholder="Enter answer..."
+            class="flex-1 text-lg text-center p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none japanese-font"
+            :class="{
+              'border-green-500 bg-green-50': gameState.isCorrect === true,
+              'border-red-500 bg-red-50': gameState.isCorrect === false,
+            }"
+          />
+          <button
+            @click="checkUserAnswer"
+            :disabled="
+              !gameState.userAnswer.trim() || gameState.isCorrect === true
+            "
+            class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors whitespace-nowrap"
+          >
+            ✓
+          </button>
+        </div>
+      </div>
+    </div>
+
+
   </div>
 </template>
 
@@ -360,6 +450,8 @@ import {
 } from './utils';
 
 const inputRef = ref<HTMLInputElement | null>(null);
+const mobileInputRef = ref<HTMLInputElement | null>(null);
+const showMobileMenu = ref(false);
 
 const gameState = reactive<GameState>({
   currentVerb: null,
@@ -437,6 +529,20 @@ const buttonGroups: ButtonGroup[] = [
   },
 ];
 
+function getCurrentConjugationLabel(): string {
+  const currentType = gameState.currentConjugationType;
+  for (const group of buttonGroups) {
+    const item = group.items.find((btn) => btn.type === currentType);
+    if (item) return item.label;
+  }
+  return 'Select Form';
+}
+
+function selectConjugationType(type: any) {
+  gameState.currentConjugationType = type;
+  showMobileMenu.value = false;
+}
+
 function nextVerb() {
   gameState.currentVerb = getRandomVerb();
   gameState.userAnswer = '';
@@ -444,11 +550,14 @@ function nextVerb() {
   gameState.showExplanation = false;
   gameState.showHint = false;
 
-  // Clear and focus the input for the next question
+  // Clear and focus the appropriate input for the next question
   nextTick(() => {
-    if (inputRef.value) {
-      inputRef.value.value = ''; // Clear the input field
-      inputRef.value.focus();
+    const isMobile = window.innerWidth < 768;
+    const targetInput = isMobile ? mobileInputRef.value : inputRef.value;
+
+    if (targetInput) {
+      targetInput.value = ''; // Clear the input field
+      targetInput.focus();
     }
   });
 }
@@ -470,6 +579,13 @@ function updateGameState(event: KeyboardEvent) {
 
   // Update game state after keyup to ensure wanakana conversion is complete
   gameState.userAnswer = target.value;
+
+  // Sync between mobile and desktop inputs
+  const isMobile = window.innerWidth < 768;
+  const otherInput = isMobile ? inputRef.value : mobileInputRef.value;
+  if (otherInput && otherInput !== target) {
+    otherInput.value = target.value;
+  }
 }
 
 function handleEnterKey() {
@@ -519,9 +635,12 @@ watch(
     gameState.showExplanation = false;
     gameState.showHint = false;
     nextTick(() => {
-      if (inputRef.value) {
-        inputRef.value.value = '';
-        inputRef.value.focus();
+      const isMobile = window.innerWidth < 768;
+      const targetInput = isMobile ? mobileInputRef.value : inputRef.value;
+
+      if (targetInput) {
+        targetInput.value = '';
+        targetInput.focus();
       }
     });
   },
@@ -532,12 +651,22 @@ onMounted(() => {
   document.title = 'Japanese Form Practice';
   nextVerb();
 
-  // Setup wanakana for hiragana input
+  // Setup wanakana for hiragana input on both desktop and mobile inputs
   nextTick(() => {
     if (inputRef.value) {
       // Bind wanakana to convert romaji to hiragana
       wanakana.bind(inputRef.value, { IMEMode: true });
-      inputRef.value.focus();
+    }
+    if (mobileInputRef.value) {
+      // Bind wanakana to mobile input too
+      wanakana.bind(mobileInputRef.value, { IMEMode: true });
+    }
+
+    // Focus the appropriate input based on screen size
+    const isMobile = window.innerWidth < 768;
+    const targetInput = isMobile ? mobileInputRef.value : inputRef.value;
+    if (targetInput) {
+      targetInput.focus();
     }
   });
 });
@@ -552,5 +681,30 @@ onMounted(() => {
 
 input.japanese-font::placeholder {
   font-family: "Noto Sans JP", sans-serif;
+}
+
+/* Safe area handling for mobile devices */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Ensure the mobile input doesn't get covered by virtual keyboard */
+@media (max-width: 767px) {
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: 100dvh; /* Use dynamic viewport height on supported browsers */
+  }
+}
+
+/* Smooth transitions for the mobile menu */
+.mobile-menu-enter-active,
+.mobile-menu-leave-active {
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-enter-from,
+.mobile-menu-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 </style>

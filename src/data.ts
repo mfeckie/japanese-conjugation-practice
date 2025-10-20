@@ -1,7 +1,7 @@
 import type {
   NegativeFormRules,
-  TeFormRules,
   PastTenseRules,
+  TeFormRules,
   Verb,
 } from './types';
 
