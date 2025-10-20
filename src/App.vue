@@ -1,7 +1,6 @@
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100"
-    :class="{ 'pb-32': true }" 
+    class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pb-32"
   >
     <div class="max-w-4xl mx-auto px-4">
       <!-- Header -->
@@ -437,7 +436,7 @@
 <script setup lang="ts">
 import { nextTick, onMounted, reactive, ref, watch } from 'vue';
 import * as wanakana from 'wanakana';
-import type { GameState } from './types';
+import type { ConjugationType, GameState } from './types';
 
 import {
   checkAnswer,
@@ -464,6 +463,9 @@ const gameState = reactive<GameState>({
   totalAttempts: 0,
   correctAnswers: 0,
 });
+
+// Mobile breakpoint constant
+const MOBILE_BREAKPOINT = 768;
 
 // Grouped button configuration (ordered logically: Plain, Plain Past, Plain Negative, Plain Past Negative, Polite, Polite Past, Polite Negative, Polite Past Negative)
 interface ButtonConfig {
@@ -538,9 +540,13 @@ function getCurrentConjugationLabel(): string {
   return 'Select Form';
 }
 
-function selectConjugationType(type: any) {
+function selectConjugationType(type: ConjugationType) {
   gameState.currentConjugationType = type;
   showMobileMenu.value = false;
+}
+
+function isMobile(): boolean {
+  return window.innerWidth < MOBILE_BREAKPOINT;
 }
 
 function nextVerb() {
@@ -552,8 +558,7 @@ function nextVerb() {
 
   // Clear and focus the appropriate input for the next question
   nextTick(() => {
-    const isMobile = window.innerWidth < 768;
-    const targetInput = isMobile ? mobileInputRef.value : inputRef.value;
+    const targetInput = isMobile() ? mobileInputRef.value : inputRef.value;
 
     if (targetInput) {
       targetInput.value = ''; // Clear the input field
@@ -581,8 +586,7 @@ function updateGameState(event: KeyboardEvent) {
   gameState.userAnswer = target.value;
 
   // Sync between mobile and desktop inputs
-  const isMobile = window.innerWidth < 768;
-  const otherInput = isMobile ? inputRef.value : mobileInputRef.value;
+  const otherInput = isMobile() ? inputRef.value : mobileInputRef.value;
   if (otherInput && otherInput !== target) {
     otherInput.value = target.value;
   }
@@ -635,8 +639,7 @@ watch(
     gameState.showExplanation = false;
     gameState.showHint = false;
     nextTick(() => {
-      const isMobile = window.innerWidth < 768;
-      const targetInput = isMobile ? mobileInputRef.value : inputRef.value;
+      const targetInput = isMobile() ? mobileInputRef.value : inputRef.value;
 
       if (targetInput) {
         targetInput.value = '';
@@ -663,8 +666,7 @@ onMounted(() => {
     }
 
     // Focus the appropriate input based on screen size
-    const isMobile = window.innerWidth < 768;
-    const targetInput = isMobile ? mobileInputRef.value : inputRef.value;
+    const targetInput = isMobile() ? mobileInputRef.value : inputRef.value;
     if (targetInput) {
       targetInput.focus();
     }
