@@ -4,3 +4,7 @@
     corporate --default,
     business --prefersdark;
 }
+
+.active {
+  @apply bg-accent text-primary-content;
+}

@@ -1,3 +1,5 @@
+import type { TemplateOnlyComponent } from '@ember/component/template-only';
+import { LinkTo } from '@ember/routing';
 export const TopBar = <template>
   <div class="navbar bg-base-100 shadow">
     <div class="navbar-start">
@@ -19,7 +21,7 @@ export const TopBar = <template>
               class="menu-title uppercase tracking-wide text-xs text-base-content/70"
             >Plain</span>
             <ul class="mt-2 space-y-1">
-              <li><a class="capitalize" href="#">te form</a></li>
+              <Link @route="te-form">て form</Link>
               <li><a class="capitalize" href="#">past form</a></li>
               <li><a class="capitalize" href="#">negative</a></li>
               <li><a class="capitalize" href="#">past negative</a></li>
@@ -51,7 +53,7 @@ export const TopBar = <template>
             class="uppercase tracking-wide text-xs text-base-content/70"
           >Plain</span>
           <ul class="flex items-center gap-3">
-            <li><a class="link link-hover capitalize" href="#">te form</a></li>
+            <Link @route="te-form">て form</Link>
             <li><a class="link link-hover capitalize" href="#">past form</a></li>
             <li><a class="link link-hover capitalize" href="#">negative</a></li>
             <li><a class="link link-hover capitalize" href="#">past negative</a></li>
@@ -71,4 +73,19 @@ export const TopBar = <template>
       </nav>
     </div>
   </div>
+</template>;
+
+interface Link {
+  Args: {
+    route: string;
+  };
+  Blocks: {
+    default: [];
+  };
+}
+const Link: TemplateOnlyComponent<Link> = <template>
+  <li><LinkTo
+      class="px-4 py-2 rounded"
+      @route={{@route}}
+    >{{yield}}</LinkTo></li>
 </template>;
