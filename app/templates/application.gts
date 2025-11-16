@@ -4,5 +4,6 @@ import { pageTitle } from 'ember-page-title';
   {{pageTitle "JapaneseConjugationPracticeEmber"}}
   <h1>Hello World</h1>
   <p>Paragraph</p>
+  <button type="button" class="btn btn-primary">Button</button>
   {{outlet}}
 </template>
