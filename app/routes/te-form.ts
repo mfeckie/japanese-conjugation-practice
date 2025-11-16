@@ -1,9 +1,10 @@
 import Route from '@ember/routing/route';
-import { randomVerbs } from 'japanese-conjugation-practice-ember/japanese-data/verbs';
+import { service } from '@ember/service';
+import type QuizService from 'japanese-conjugation-practice-ember/services/quiz';
 
 export default class TeFormRoute extends Route {
-  model() {
-    const shuffledVerbs = randomVerbs();
-    return shuffledVerbs;
+  @service declare quiz: QuizService;
+  beforeModel() {
+    this.quiz.setupVerbs();
   }
 }
