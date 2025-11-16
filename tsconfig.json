@@ -1,16 +1,28 @@
 {
   "extends": "@ember/app-tsconfig",
-  "include": ["app", "tests", "types"],
-  "glint": {
-    "environment": ["ember-loose", "ember-template-imports"]
-  },
+  "include": [
+    "app",
+    "tests",
+    "types"
+  ],
+  "glint": {},
   "compilerOptions": {
     "allowJs": true,
     "paths": {
-      "japanese-conjugation-practice-ember/tests/*": ["./tests/*"],
-      "japanese-conjugation-practice-ember/*": ["./app/*"],
-      "*": ["./types/*"]
+      "japanese-conjugation-practice-ember/tests/*": [
+        "./tests/*"
+      ],
+      "japanese-conjugation-practice-ember/*": [
+        "./app/*"
+      ],
+      "*": [
+        "./types/*"
+      ]
     },
-    "types": ["ember-source/types", "@embroider/core/virtual", "vite/client"]
+    "types": [
+      "ember-source/types",
+      "@embroider/core/virtual",
+      "vite/client"
+    ]
   }
 }
