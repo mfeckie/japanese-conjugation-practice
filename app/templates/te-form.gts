@@ -1,13 +1,13 @@
-import { QuizCard } from 'japanese-conjugation-practice-ember/components/QuizCard.gts';
+import { ContentWrapper } from 'japanese-conjugation-practice-ember/components/ContentWrapper.gts';
 import { TeQuiz } from 'japanese-conjugation-practice-ember/components/TeQuiz.gts';
 
 const page = <template>
-  <QuizCard>
+  <ContentWrapper>
     <:title>て Form Quiz</:title>
     <:body>
       <TeQuiz />
     </:body>
-  </QuizCard>
+  </ContentWrapper>
 </template>;
 
 export default page;
