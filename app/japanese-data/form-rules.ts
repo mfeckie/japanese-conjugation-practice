@@ -15,13 +15,7 @@ export interface TeFormRules {
 export function deriveTeForm(verb: Verb): string {
   const { hiragana, type, endingGroup } = verb;
 
-  if (type === 'ichidan') {
-    // Apply ichidan rule: remove る and add て
-    if (hiragana.endsWith('る')) {
-      return `${hiragana.slice(0, -1)}て`;
-    }
-  } else if (type === 'irregular') {
-    // Check for irregular rules
+  if (type === 'irregular') {
     const rule = teFormRules.irregular[hiragana];
     if (rule) {
       return hiragana.replace(rule.pattern, rule.replacement);
@@ -30,9 +24,15 @@ export function deriveTeForm(verb: Verb): string {
     if (hiragana.endsWith('する')) {
       return `${hiragana.slice(0, -2)}して`;
     }
-  } else if (type === 'godan' && endingGroup) {
-    // Apply godan rule based on ending group
+  }
+
+  if (type === 'ichidan') {
+    return `${hiragana.slice(0, -1)}て`;
+  }
+
+  if (type === 'godan' && endingGroup) {
     const rule = teFormRules.godan[endingGroup];
+
     if (rule) {
       return `${hiragana.slice(0, -rule.pattern.length)}${rule.replacement}`;
     }

@@ -5,6 +5,7 @@ import {
   randomVerbs,
   type Verb,
 } from 'japanese-conjugation-practice-ember/japanese-data/verbs';
+import { deriveTeForm } from 'japanese-conjugation-practice-ember/japanese-data/form-rules';
 
 export default class QuizService extends Service {
   @tracked correctAnswers = 0;
@@ -33,5 +34,10 @@ export default class QuizService extends Service {
 
   nextQuestion() {
     this.currentQuestion = this.verbs.pop();
+  }
+
+  get teForm() {
+    if (!this.currentQuestion) return;
+    return deriveTeForm(this.currentQuestion);
   }
 }

@@ -8,5 +8,6 @@ export class TeQuiz extends Component {
   <template>
     <p>{{this.quiz.remainingQuestions}} verbs remaining</p>
     <p>Question {{this.quiz.currentQuestion.hiragana}}</p>
+    <p>Answer {{this.quiz.teForm}}</p>
   </template>
 }
