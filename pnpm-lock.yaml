@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      ember-phosphor-icons:
+        specifier: ^1.0.2
+        version: 1.0.2(@babel/core@7.28.5)
     devDependencies:
       '@babel/core':
         specifier: ^7.28.4
@@ -2711,6 +2715,9 @@ packages:
     resolution: {integrity: sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==}
     engines: {node: '>=0.10'}
 
+  decorator-transforms@1.2.1:
+    resolution: {integrity: sha512-UUtmyfdlHvYoX3VSG1w5rbvBQ2r5TX1JsE4hmKU9snleFymadA3VACjl6SRfi9YgBCSjBbfQvR1bs9PRW9yBKw==}
+
   decorator-transforms@2.3.0:
     resolution: {integrity: sha512-jo8c1ss9yFPudHuYYcrJ9jpkDZIoi+lOGvt+Uyp9B+dz32i50icRMx9Bfa8hEt7TnX1FyKWKkjV+cUdT/ep2kA==}
 
@@ -2892,6 +2899,9 @@ packages:
   ember-page-title@9.0.3:
     resolution: {integrity: sha512-fedRHUsvq8tIZgOii8jTrfAyeq+la/9H5eAzhNNwEyzo7nDMmqK2SxsyBUGXprd8fOacsPabLlzlucMi/4mUpA==}
     engines: {node: 16.* || >= 18}
+
+  ember-phosphor-icons@1.0.2:
+    resolution: {integrity: sha512-N3naRavKUoA35Vmvt/USLMRhP5zY1GP05ZWpDrgOyRwM8D2PLUgGPMdK4yyFXOGE7hyHPlZ4aUlExht3ZTwbfQ==}
 
   ember-qunit@9.0.4:
     resolution: {integrity: sha512-rv6gKvrdXdPBTdSZC5co82eIcDWWVR7RjafU/c+5TTz290oXhIHPoVuZbcO2F5RiAqkTW0jKzwkCP8y+2tCjFw==}
@@ -9097,6 +9107,13 @@ snapshots:
 
   decode-uri-component@0.2.2: {}
 
+  decorator-transforms@1.2.1(@babel/core@7.28.5):
+    dependencies:
+      '@babel/plugin-syntax-decorators': 7.27.1(@babel/core@7.28.5)
+      babel-import-util: 2.1.1
+    transitivePeerDependencies:
+      - '@babel/core'
+
   decorator-transforms@2.3.0(@babel/core@7.28.5):
     dependencies:
       '@babel/plugin-syntax-decorators': 7.27.1(@babel/core@7.28.5)
@@ -9552,6 +9569,14 @@ snapshots:
       '@embroider/addon-shim': 1.10.2
       '@simple-dom/document': 1.4.0
     transitivePeerDependencies:
+      - supports-color
+
+  ember-phosphor-icons@1.0.2(@babel/core@7.28.5):
+    dependencies:
+      '@embroider/addon-shim': 1.10.2
+      decorator-transforms: 1.2.1(@babel/core@7.28.5)
+    transitivePeerDependencies:
+      - '@babel/core'
       - supports-color
 
   ember-qunit@9.0.4(@ember/test-helpers@5.4.1(@babel/core@7.28.5)(@glint/template@1.7.2))(@glint/template@1.7.2)(qunit@2.24.2):
