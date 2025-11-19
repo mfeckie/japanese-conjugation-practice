@@ -15,8 +15,7 @@ export class TeQuiz extends Component {
 }
 
 const VerbInfo: TemplateOnlyComponent<{ verbType?: string }> = <template>
-  <div class="badge badge-md badge-accent py-4">
-    {{! <span class="phosphor-info"></span> }}
+  <div class="badge badge-md badge-accent py-4 rounded-full">
     <PhInfo @size="1.5em" />
     <span class="inline-flex items-center capitalize">{{@verbType}}</span>
   </div>
