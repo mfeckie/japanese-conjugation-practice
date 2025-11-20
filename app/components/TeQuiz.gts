@@ -3,26 +3,30 @@ import Component from '@glimmer/component';
 import type QuizService from 'japanese-conjugation-practice-ember/services/quiz';
 import type { TemplateOnlyComponent } from '@ember/component/template-only';
 import PhInfo from 'ember-phosphor-icons/components/ph-info';
-import PhLightbulb from 'ember-phosphor-icons/components/ph-lightbulb';
 import { KanaInput } from './KanaInput.gts';
-import type { InputStateService } from 'japanese-conjugation-practice-ember/services/input-state-service';
+import type { StateService } from 'japanese-conjugation-practice-ember/services/state-service';
+import { tracked } from '@glimmer/tracking';
+import { getExplanation } from 'japanese-conjugation-practice-ember/japanese-data/form-rules';
+import { Hint } from './Hint.gts';
 
 export class TeQuiz extends Component {
   @service declare quiz: QuizService;
-  @service declare inputStateService: InputStateService;
+  @service declare stateService: StateService;
+
+  @tracked showHint: boolean = false;
 
   handleEnter = (value: string) => {
     const isCorrect = this.quiz.teForm == value;
 
     if (isCorrect) {
-      this.inputStateService.correctAnswer();
+      this.stateService.correctAnswer();
+      this.showHint = false;
     } else {
-      this.inputStateService.incorrectAnswer();
+      this.stateService.incorrectAnswer();
     }
 
     return isCorrect;
   };
-
   <template>
     <div class="flex flex-col items-center gap-2">
       <VerbInfo @verbType={{this.quiz.currentQuestion.type}} />
@@ -38,11 +42,12 @@ export class TeQuiz extends Component {
       </h4>
       <div class="divider"></div>
       <h4 class="text-3xl">Convert to て form</h4>
-      <button class="btn btn-warning text-base-100" type="button">
-        Show hint
-        <PhLightbulb @size="1.5rem" @weight="duotone" />
-      </button>
+
       <KanaInput @onEnter={{this.handleEnter}} />
+      <Hint>
+        {{getExplanation this.quiz.currentQuestion}}
+      </Hint>
+
     </div>
   </template>
 }

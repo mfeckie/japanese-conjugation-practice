@@ -42,6 +42,37 @@ export function deriveTeForm(verb: Verb): string {
   return '';
 }
 
+export function getExplanation(verb?: Verb): string {
+  if (!verb) return '';
+  const { type, hiragana } = verb;
+  const teForm = deriveTeForm(verb);
+
+  switch (type) {
+    case 'ichidan':
+      return `${hiragana} is an ichidan verb. ${teFormRules.ichidan.description}. So ${hiragana} becomes ${teForm}.`;
+
+    case 'irregular': {
+      const irregularRule = teFormRules.irregular[hiragana];
+      if (irregularRule) {
+        return `${hiragana} is an irregular verb. ${irregularRule.description}.`;
+      }
+      return `${hiragana} is an irregular verb with a special て-form: ${teForm}.`;
+    }
+
+    case 'godan': {
+      const endingGroup = verb.endingGroup;
+      if (endingGroup && teFormRules.godan[endingGroup]) {
+        const rule = teFormRules.godan[endingGroup];
+        return `${hiragana} is a godan verb. ${rule.description}. So ${hiragana} becomes ${teForm}.`;
+      }
+      return `${hiragana} is a godan verb that becomes ${teForm} in て-form.`;
+    }
+
+    default:
+      return `The て-form of ${hiragana} is ${teForm}.`;
+  }
+}
+
 export const teFormRules: TeFormRules = {
   ichidan: {
     pattern: 'る',

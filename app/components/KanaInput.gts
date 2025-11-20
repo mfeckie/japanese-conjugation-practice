@@ -2,14 +2,14 @@ import Component from '@glimmer/component';
 import * as wanakana from 'wanakana';
 import { modifier } from 'ember-modifier';
 import { service } from '@ember/service';
-import type { InputStateService } from 'japanese-conjugation-practice-ember/services/input-state-service';
+import type { StateService } from 'japanese-conjugation-practice-ember/services/state-service';
 
 type InputEvent = (event: Event) => void;
 
 const wanakanaModifier = modifier(
   (
     element: HTMLInputElement,
-    [onKeyup, inputService]: [InputEvent, InputStateService]
+    [onKeyup, inputService]: [InputEvent, StateService]
   ) => {
     wanakana.bind(element);
 
@@ -34,10 +34,10 @@ interface Signature {
 }
 
 export class KanaInput extends Component<Signature> {
-  @service declare inputStateService: InputStateService;
+  @service declare stateService: StateService;
 
   onKeyup = async (event: Event) => {
-    this.inputStateService.reset();
+    this.stateService.reset();
     if ((event as KeyboardEvent).key === 'Enter') {
       const input = event.target as HTMLInputElement;
       this.args.onEnter(input.value);
@@ -57,7 +57,7 @@ export class KanaInput extends Component<Signature> {
       autocorrect="off"
       autocapitalize="off"
       placeholder="Type here"
-      {{wanakanaModifier this.onKeyup this.inputStateService}}
+      {{wanakanaModifier this.onKeyup this.stateService}}
     />
   </template>
 }
