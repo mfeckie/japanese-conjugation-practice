@@ -4,9 +4,24 @@ import type QuizService from 'japanese-conjugation-practice-ember/services/quiz'
 import type { TemplateOnlyComponent } from '@ember/component/template-only';
 import PhInfo from 'ember-phosphor-icons/components/ph-info';
 import PhLightbulb from 'ember-phosphor-icons/components/ph-lightbulb';
+import { KanaInput } from './KanaInput.gts';
+import type { InputStateService } from 'japanese-conjugation-practice-ember/services/input-state-service';
 
 export class TeQuiz extends Component {
   @service declare quiz: QuizService;
+  @service declare inputStateService: InputStateService;
+
+  handleEnter = (value: string) => {
+    const isCorrect = this.quiz.teForm == value;
+
+    if (isCorrect) {
+      this.inputStateService.correctAnswer();
+    } else {
+      this.inputStateService.incorrectAnswer();
+    }
+
+    return isCorrect;
+  };
 
   <template>
     <div class="flex flex-col items-center gap-2">
@@ -27,6 +42,7 @@ export class TeQuiz extends Component {
         Show hint
         <PhLightbulb @size="1.5rem" @weight="duotone" />
       </button>
+      <KanaInput @onEnter={{this.handleEnter}} />
     </div>
   </template>
 }
