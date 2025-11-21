@@ -18,8 +18,6 @@ export class Hint extends Component<Signature> {
   constructor(owner: Owner, args: Signature['Args']) {
     super(owner, args);
 
-    console.log('new Hint');
-
     this.stateService.closeHint = this.closeHint;
   }
 
