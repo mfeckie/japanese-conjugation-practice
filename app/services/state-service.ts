@@ -1,10 +1,12 @@
 import Service from '@ember/service';
 import type QuizService from './quiz';
 import { service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
 
 export class StateService extends Service {
   @service declare quiz: QuizService;
   input?: HTMLInputElement;
+  @tracked showSuccess = false;
   closeHint?: () => void;
 
   incorrectAnswer() {
@@ -20,11 +22,15 @@ export class StateService extends Service {
   async correctAnswer() {
     if (!this.input) return;
     this.input.classList.add('input-success');
-    this.input.classList.add('animate-bounce');
-    await new Promise((resolve) => setTimeout(resolve, 350));
+    this.input.classList.add('animate-scale');
+    this.showSuccess = true;
+
+    await new Promise((resolve) => setTimeout(resolve, 450));
+
     this.input.value = '';
     this.quiz.nextQuestion();
     this.reset();
+    this.showSuccess = false;
     this.closeHint?.();
   }
 }

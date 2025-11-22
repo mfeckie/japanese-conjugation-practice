@@ -3,6 +3,8 @@ import * as wanakana from 'wanakana';
 import { modifier } from 'ember-modifier';
 import { service } from '@ember/service';
 import type { StateService } from 'japanese-conjugation-practice-ember/services/state-service';
+import { on } from '@ember/modifier';
+import { PhCheck, PhCheckFat } from 'ember-phosphor-icons';
 
 type InputEvent = (event: Event) => void;
 
@@ -44,20 +46,33 @@ export class KanaInput extends Component<Signature> {
     }
   };
 
+  handleSubmit = (event: Event) => {
+    event.preventDefault();
+  };
+
   <template>
-    <label for="answer">Answer</label>
-    {{! template-lint-disable no-autofocus-attribute }}
-    <input
-      id="answer"
-      name="answer"
-      class="input input-bordered input-lg w-full max-w-xs text-center text-3xl"
-      type="text"
-      autofocus
-      autocomplete="off"
-      autocorrect="off"
-      autocapitalize="off"
-      placeholder="Type here"
-      {{wanakanaModifier this.onKeyup this.stateService}}
-    />
+    <form class="relative" {{on "submit" this.handleSubmit}}>
+      <label for="answer">
+        {{! template-lint-disable no-autofocus-attribute }}
+        <input
+          id="answer"
+          name="answer"
+          class="input input-bordered input-lg w-full max-w-xs text-center text-2xl"
+          type="text"
+          autofocus
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          placeholder="Type here"
+          {{wanakanaModifier this.onKeyup this.stateService}}
+        />
+      </label>
+      {{#if this.stateService.showSuccess}}
+        <PhCheckFat
+          @size="42"
+          class="text-success absolute right-2.5 top-1 z-10 bg-base-100 dark:bg-base-200"
+        />
+      {{/if}}
+    </form>
   </template>
 }
