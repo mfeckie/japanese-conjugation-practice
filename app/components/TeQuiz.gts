@@ -8,10 +8,12 @@ import type { StateService } from 'japanese-conjugation-practice-ember/services/
 import { tracked } from '@glimmer/tracking';
 import { getExplanation } from 'japanese-conjugation-practice-ember/japanese-data/form-rules';
 import { Hint } from './Hint.gts';
+import type ScoreService from 'japanese-conjugation-practice-ember/services/score-service';
 
 export class TeQuiz extends Component {
   @service declare quiz: QuizService;
   @service declare stateService: StateService;
+  @service declare scoreService: ScoreService;
 
   @tracked showHint: boolean = false;
 
@@ -20,9 +22,12 @@ export class TeQuiz extends Component {
 
     if (isCorrect) {
       this.stateService.correctAnswer();
+      this.scoreService.incrementCorrect();
+      this.scoreService.incrementAnswered();
       this.showHint = false;
     } else {
       this.stateService.incorrectAnswer();
+      this.scoreService.incrementIncorrect();
     }
 
     return isCorrect;
