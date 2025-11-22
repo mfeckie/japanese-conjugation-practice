@@ -1,5 +1,6 @@
 import type { TemplateOnlyComponent } from '@ember/component/template-only';
 import { LinkTo } from '@ember/routing';
+import { Score } from './Score.gts';
 export const TopBar = <template>
   <div class="navbar bg-base-100 shadow">
     <div class="navbar-start">
@@ -41,6 +42,7 @@ export const TopBar = <template>
         </nav>
       </div>
       <span class="btn btn-ghost text-xl normal-case">Japanese Form Practice</span>
+      <Score />
     </div>
 
     <div class="navbar-center hidden lg:flex">

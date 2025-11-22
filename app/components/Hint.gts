@@ -31,7 +31,7 @@ export class Hint extends Component<Signature> {
 
   <template>
     <button
-      class="btn btn-warning text-base-100 mt-3"
+      class="btn btn-info mt-3"
       type="button"
       {{on "click" this.toggleHint}}
     >
