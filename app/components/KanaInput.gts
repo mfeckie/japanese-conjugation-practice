@@ -4,7 +4,7 @@ import { modifier } from 'ember-modifier';
 import { service } from '@ember/service';
 import type { StateService } from 'japanese-conjugation-practice-ember/services/state-service';
 import { on } from '@ember/modifier';
-import { PhCheck, PhCheckFat } from 'ember-phosphor-icons';
+import { PhCheckFat } from 'ember-phosphor-icons';
 
 type InputEvent = (event: Event) => void;
 
