@@ -6,10 +6,16 @@ import {
   PhCheckCircle,
   PhXCircle,
 } from 'ember-phosphor-icons';
+import type QuizService from 'japanese-conjugation-practice-ember/services/quiz';
 import type ScoreService from 'japanese-conjugation-practice-ember/services/score-service';
 
 export class Score extends Component {
   @service declare scoreService: ScoreService;
+  @service declare quiz: QuizService;
+  reset = () => {
+    this.scoreService.resetScore();
+    this.quiz.setupVerbs();
+  };
 
   <template>
     <div class="flex border border-secondary rounded-md py-2 px-4 gap-2">
@@ -22,13 +28,18 @@ export class Score extends Component {
         <span class="pb-0.5">{{this.scoreService.incorrectAnswers}}</span>
         <PhXCircle class="ml-2" />
       </div>
+      <div class="border-l"></div>
+      <div class="flex items-center">
+        <span class="pb-0.5 font-bold">{{this.quiz.remainingQuestions}}</span>
+        <span class="ml-2 text-base">Remaining</span>
+      </div>
     </div>
     <div class="ml-2">
       <button
         class="btn btn-neutral btn-square btn-sm"
         title="Reset score"
         type="button"
-        {{on "click" this.scoreService.resetScore}}
+        {{on "click" this.reset}}
       >
         <PhArrowBendDownLeft />
       </button>
