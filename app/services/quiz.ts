@@ -5,14 +5,17 @@ import {
   randomVerbs,
   type Verb,
 } from 'japanese-conjugation-practice-ember/japanese-data/verbs';
-import { deriveTeForm } from 'japanese-conjugation-practice-ember/japanese-data/form-rules';
+import {
+  deriveTeForm,
+  form_types,
+} from 'japanese-conjugation-practice-ember/japanese-data/form-rules';
 
 export default class QuizService extends Service {
   @tracked correctAnswers = 0;
   @tracked questionsAnswered = 0;
   @tracked currentQuestion?: Verb;
   @tracked verbs: Verb[] = new TrackedArray();
-  @tracked formType: string = 'te';
+  @tracked formType: keyof typeof form_types = 'te';
 
   get remainingQuestions() {
     return this.verbs.length;
@@ -39,6 +42,10 @@ export default class QuizService extends Service {
 
   get conjugatedForm() {
     if (!this.currentQuestion) return;
-    return deriveTeForm(this.currentQuestion);
+
+    switch (this.formType) {
+      case 'te':
+        return deriveTeForm(this.currentQuestion);
+    }
   }
 }
