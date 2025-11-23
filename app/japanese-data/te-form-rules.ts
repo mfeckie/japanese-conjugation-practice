@@ -7,6 +7,7 @@ export const FormTypes = {
   past_negative: 'なかった form',
   polite: 'ます form',
   past_polite: 'ました form',
+  polite_negative: 'ません form',
 };
 
 export function getFormTitle(form_type: keyof typeof FormTypes): string {

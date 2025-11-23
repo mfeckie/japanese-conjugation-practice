@@ -32,6 +32,10 @@ import {
   derivePastPoliteForm,
   pastPoliteFormExplanation,
 } from 'japanese-conjugation-practice-ember/japanese-data/past-polite-form';
+import {
+  derivePoliteNegativeForm,
+  politeNegativeFormExplanation,
+} from 'japanese-conjugation-practice-ember/japanese-data/negative-polite-form';
 
 const noHint: TransformationHint = {
   step1: 'No hint available',
@@ -86,6 +90,8 @@ export default class QuizService extends Service {
         return derivePoliteForm(this.currentQuestion);
       case 'past_polite':
         return derivePastPoliteForm(this.currentQuestion);
+      case 'polite_negative':
+        return derivePoliteNegativeForm(this.currentQuestion);
     }
   }
 
@@ -109,6 +115,8 @@ export default class QuizService extends Service {
         return politeFormExplanation(this.currentQuestion);
       case 'past_polite':
         return pastPoliteFormExplanation(this.currentQuestion);
+      case 'polite_negative':
+        return politeNegativeFormExplanation(this.currentQuestion);
       default:
         return noHint;
     }
