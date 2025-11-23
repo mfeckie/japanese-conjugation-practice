@@ -7,7 +7,7 @@ export const TopBar = <template>
       <div class="dropdown">
         <button
           type="button"
-          class="btn btn-ghost lg:hidden"
+          class="btn btn-ghost"
           aria-label="Toggle menu"
           tabindex="0"
         >
@@ -15,7 +15,7 @@ export const TopBar = <template>
         </button>
         <nav
           aria-label="Mobile navigation"
-          class="menu menu-sm dropdown-content mt-3 w-60 rounded-box bg-base-100 p-4 shadow lg:hidden"
+          class="menu menu-sm dropdown-content mt-4 w-60 rounded-box bg-base-100 p-4 shadow"
         >
           <div class="mb-3 border-b border-base-300 pb-2">
             <span
@@ -41,39 +41,14 @@ export const TopBar = <template>
           </div>
         </nav>
       </div>
-      <span class="btn btn-ghost text-xl normal-case">Japanese Form Practice</span>
+      <span class="btn btn-ghost text-xl normal-case hidden md:flex">Japanese
+        Form Practice</span>
+    </div>
+
+    <div class="navbar-end">
       <Score />
     </div>
 
-    <div class="navbar-center hidden lg:flex">
-      <nav
-        aria-label="Desktop navigation"
-        class="flex items-center gap-10 text-sm"
-      >
-        <div class="flex items-center gap-3">
-          <span
-            class="uppercase tracking-wide text-xs text-base-content/70"
-          >Plain</span>
-          <ul class="flex items-center gap-3">
-            <Link @route="te-form">て form</Link>
-            <li><a class="link link-hover capitalize" href="#">past form</a></li>
-            <li><a class="link link-hover capitalize" href="#">negative</a></li>
-            <li><a class="link link-hover capitalize" href="#">past negative</a></li>
-          </ul>
-        </div>
-        <div class="flex items-center gap-3">
-          <span
-            class="uppercase tracking-wide text-xs text-base-content/70"
-          >Polite</span>
-          <ul class="flex items-center gap-3">
-            <li><a class="link link-hover capitalize" href="#">polite</a></li>
-            <li><a class="link link-hover capitalize" href="#">past</a></li>
-            <li><a class="link link-hover capitalize" href="#">negative</a></li>
-            <li><a class="link link-hover capitalize" href="#">past negative</a></li>
-          </ul>
-        </div>
-      </nav>
-    </div>
   </div>
 </template>;
 

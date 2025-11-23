@@ -1,7 +1,11 @@
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { PhCheckCircle, PhSealQuestion, PhXCircle } from 'ember-phosphor-icons';
+import {
+  PhArrowBendDownLeft,
+  PhCheckCircle,
+  PhXCircle,
+} from 'ember-phosphor-icons';
 import type ScoreService from 'japanese-conjugation-practice-ember/services/score-service';
 
 export class Score extends Component {
@@ -21,10 +25,13 @@ export class Score extends Component {
     </div>
     <div class="ml-2">
       <button
-        class="btn btn-warning"
+        class="btn btn-error btn-square btn-sm"
+        title="Reset score"
         type="button"
         {{on "click" this.scoreService.resetScore}}
-      >Reset score</button>
+      >
+        <PhArrowBendDownLeft />
+      </button>
     </div>
   </template>
 }
