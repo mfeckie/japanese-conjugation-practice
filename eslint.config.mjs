@@ -16,6 +16,7 @@ import globals from 'globals';
 import js from '@eslint/js';
 
 import ts from 'typescript-eslint';
+import { defineConfig } from 'eslint/config';
 
 import ember from 'eslint-plugin-ember/recommended';
 
@@ -38,7 +39,7 @@ const parserOptions = {
   },
 };
 
-export default ts.config(
+export default defineConfig(
   js.configs.recommended,
   ember.configs.base,
   ember.configs.gjs,
@@ -64,6 +65,11 @@ export default ts.config(
     languageOptions: {
       parser: babelParser,
     },
+    ignores: [
+      'config/environment.js',
+      'config/targets.js',
+      'ember-cli-build.js',
+    ],
   },
   {
     files: ['**/*.{js,gjs}'],
