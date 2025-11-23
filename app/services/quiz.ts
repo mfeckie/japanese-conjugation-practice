@@ -3,6 +3,7 @@ import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import {
   randomVerbs,
+  type TransformationHint,
   type Verb,
 } from 'japanese-conjugation-practice-ember/japanese-data/verbs';
 import {
@@ -15,6 +16,13 @@ import {
   derivePastTenseForm,
   pastFormExplanation,
 } from 'japanese-conjugation-practice-ember/japanese-data/past-form-rules';
+
+const noHint: TransformationHint = {
+  step1: 'No hint available',
+  step2: '',
+  rule: '',
+  example: '',
+};
 
 export default class QuizService extends Service {
   @tracked correctAnswers = 0;
@@ -61,8 +69,8 @@ export default class QuizService extends Service {
     return getFormTitle(this.formType);
   }
 
-  get hintText() {
-    if (!this.currentQuestion) return '';
+  get hintText(): TransformationHint {
+    if (!this.currentQuestion) return noHint;
 
     switch (this.formType) {
       case 'te':
@@ -70,7 +78,7 @@ export default class QuizService extends Service {
       case 'past':
         return pastFormExplanation(this.currentQuestion);
       default:
-        return '';
+        return noHint;
     }
   }
 }

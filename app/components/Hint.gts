@@ -29,6 +29,9 @@ export class Hint extends Component<Signature> {
         <ul class="list">
           <li class="list-row">{{this.quiz.hintText.step1}}</li>
           <li class="list-row">{{this.quiz.hintText.step2}}</li>
+          {{#if this.quiz.hintText.step3}}
+            <li class="list-row">{{this.quiz.hintText.step3}}</li>
+          {{/if}}
           <li class="list-row"><span class="font-bold">Example:</span>
             {{this.quiz.hintText.example}}</li>
         </ul>
