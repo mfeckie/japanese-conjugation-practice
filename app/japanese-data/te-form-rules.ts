@@ -2,7 +2,7 @@ import type { Verb } from './verbs';
 
 export const form_types = {
   te: 'て form',
-  past: 'past form',
+  past: 'だ form',
   negative: 'negative form',
   past_negative: 'past negative form',
 };
@@ -59,7 +59,7 @@ export function deriveTeForm(verb: Verb): string {
   return '';
 }
 
-export function getExplanation(verb?: Verb): string {
+export function teFormExplanation(verb?: Verb): string {
   if (!verb) return '';
   const { type, hiragana } = verb;
   const teForm = deriveTeForm(verb);

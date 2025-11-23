@@ -9,6 +9,8 @@ import {
   derivePastTenseForm,
   deriveTeForm,
   form_types,
+  getFormTitle,
+  teFormExplanation,
 } from 'japanese-conjugation-practice-ember/japanese-data/te-form-rules';
 
 export default class QuizService extends Service {
@@ -49,6 +51,23 @@ export default class QuizService extends Service {
         return deriveTeForm(this.currentQuestion);
       case 'past':
         return derivePastTenseForm(this.currentQuestion);
+    }
+  }
+
+  get formTitle() {
+    return getFormTitle(this.formType);
+  }
+
+  get hintText() {
+    if (!this.currentQuestion) return '';
+
+    switch (this.formType) {
+      case 'te':
+        return teFormExplanation(this.currentQuestion);
+      case 'past':
+        return `The past form of ${this.currentQuestion.hiragana} is ${this.conjugatedForm}.`;
+      default:
+        return '';
     }
   }
 }
