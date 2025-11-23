@@ -18,35 +18,34 @@ export class Hint extends Component<Signature> {
   constructor(owner: Owner, args: Signature['Args']) {
     super(owner, args);
 
-    this.stateService.closeHint = this.closeHint;
+    this.stateService.closeHint = this.closeModal;
   }
 
-  toggleHint = () => {
-    this.showHint = !this.showHint;
-  };
+  showModal = () => {};
 
-  closeHint = () => {
+  closeModal = () => {
     this.showHint = false;
   };
 
   <template>
-    <button
-      class="btn btn-info mt-3"
-      type="button"
-      {{on "click" this.toggleHint}}
-    >
+    <button class="btn btn-info mt-3" type="button" onclick="hint.showModal()">
       Show hint
       <PhLightbulb @size="1.5rem" @weight="duotone" />
     </button>
-    {{#if this.showHint}}
-      <div class="alert alert-info shadow-lg mt-4 md:max-w-1/2">
-        <PhInfo @size="1.5em" />
-        <div>
-          <span class="text-xl">
+    <dialog id="hint" class="modal modal-bottom">
+      <div class="modal-box">
+        <PhInfo @size="1.5em" class="text-info" />
+        <div class="mt-4 flex justify-center">
+          <span class="text-2xl text-center">
             {{yield}}
           </span>
         </div>
+        <div class="modal-action">
+          <form method="dialog">
+            <button type="submit" class="btn">Close</button>
+          </form>
+        </div>
       </div>
-    {{/if}}
+    </dialog>
   </template>
 }

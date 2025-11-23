@@ -3,12 +3,10 @@ import { TopBar } from 'japanese-conjugation-practice-ember/components/TopBar.gt
 
 <template>
   {{pageTitle "Japanese Conjugation Practice"}}
-  <div class="min-h-screen bg-base-200">
-    <TopBar />
-    <main
-      class="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 px-4 py-6 sm:px-6 md:gap-8 lg:px-8"
-    >
-      {{outlet}}
-    </main>
-  </div>
+  <TopBar />
+  <main
+    class="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 px-4 py-6 sm:px-6 md:gap-8 lg:px-8 h-[calc(100dvh-8rem)]"
+  >
+    {{outlet}}
+  </main>
 </template>
