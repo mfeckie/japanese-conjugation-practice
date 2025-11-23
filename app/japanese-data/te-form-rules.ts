@@ -1,4 +1,4 @@
-import type { Verb } from './verbs';
+import type { FormRules, Verb } from './verbs';
 
 export const form_types = {
   te: 'て form',
@@ -9,24 +9,6 @@ export const form_types = {
 
 export function getFormTitle(form_type: keyof typeof form_types): string {
   return form_types[form_type];
-}
-
-export interface FormRule {
-  pattern: string;
-  replacement: string;
-  description: string;
-}
-
-export interface TeFormRules {
-  ichidan: FormRule;
-  irregular: { [key: string]: FormRule };
-  godan: { [key: string]: FormRule };
-}
-
-export interface PastTenseRules {
-  ichidan: FormRule;
-  irregular: { [key: string]: FormRule };
-  godan: { [key: string]: FormRule };
 }
 
 export function deriveTeForm(verb: Verb): string {
@@ -90,114 +72,7 @@ export function teFormExplanation(verb?: Verb): string {
   }
 }
 
-export function derivePastTenseForm(verb: Verb): string {
-  const { hiragana, type, endingGroup } = verb;
-
-  if (type === 'ichidan') {
-    // Apply ichidan rule: remove る and add た
-    if (hiragana.endsWith('る')) {
-      return `${hiragana.slice(0, -1)}た`;
-    }
-  } else if (type === 'irregular') {
-    // Check for irregular rules
-    const rule = pastTenseRules.irregular[hiragana];
-    if (rule) {
-      return hiragana.replace(rule.pattern, rule.replacement);
-    }
-    // Handle compound する verbs (e.g., りょこうする → りょこうした)
-    if (hiragana.endsWith('する')) {
-      return `${hiragana.slice(0, -2)}した`;
-    }
-  } else if (type === 'godan' && endingGroup) {
-    // Apply godan rule based on ending group
-    const rule = pastTenseRules.godan[endingGroup];
-    if (rule) {
-      return `${hiragana.slice(0, -rule.pattern.length)}${rule.replacement}`;
-    }
-  }
-
-  // If no rule applies, return empty string
-  return '';
-}
-
-export const pastTenseRules: PastTenseRules = {
-  ichidan: {
-    pattern: 'る',
-    replacement: 'た',
-    description: 'For ichidan verbs, replace る with た',
-  },
-  irregular: {
-    する: {
-      pattern: 'する',
-      replacement: 'した',
-      description: 'する becomes した (irregular)',
-    },
-    くる: {
-      pattern: 'くる',
-      replacement: 'きた',
-      description: 'くる becomes きた (irregular)',
-    },
-    いく: {
-      pattern: 'いく',
-      replacement: 'いった',
-      description: 'いく becomes いった (irregular)',
-    },
-    ある: {
-      pattern: 'ある',
-      replacement: 'あった',
-      description: 'ある becomes あった (irregular)',
-    },
-  },
-  godan: {
-    u: {
-      pattern: 'う',
-      replacement: 'った',
-      description: 'For verbs ending in う, replace う with った',
-    },
-    ku: {
-      pattern: 'く',
-      replacement: 'いた',
-      description: 'For verbs ending in く, replace く with いた',
-    },
-    gu: {
-      pattern: 'ぐ',
-      replacement: 'いだ',
-      description: 'For verbs ending in ぐ, replace ぐ with いだ',
-    },
-    su: {
-      pattern: 'す',
-      replacement: 'した',
-      description: 'For verbs ending in す, replace す with した',
-    },
-    tsu: {
-      pattern: 'つ',
-      replacement: 'った',
-      description: 'For verbs ending in つ, replace つ with った',
-    },
-    nu: {
-      pattern: 'ぬ',
-      replacement: 'んだ',
-      description: 'For verbs ending in ぬ, replace ぬ with んだ',
-    },
-    bu: {
-      pattern: 'ぶ',
-      replacement: 'んだ',
-      description: 'For verbs ending in ぶ, replace ぶ with んだ',
-    },
-    mu: {
-      pattern: 'む',
-      replacement: 'んだ',
-      description: 'For verbs ending in む, replace む with んだ',
-    },
-    ru: {
-      pattern: 'る',
-      replacement: 'った',
-      description: 'For godan verbs ending in る, replace る with った',
-    },
-  },
-};
-
-export const teFormRules: TeFormRules = {
+export const teFormRules: FormRules = {
   ichidan: {
     pattern: 'る',
     replacement: 'て',

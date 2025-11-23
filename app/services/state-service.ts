@@ -7,7 +7,6 @@ export class StateService extends Service {
   @service declare quiz: QuizService;
   input?: HTMLInputElement;
   @tracked showSuccess = false;
-  closeHint?: () => void;
 
   incorrectAnswer() {
     if (!this.input) return;
@@ -31,7 +30,6 @@ export class StateService extends Service {
     this.quiz.nextQuestion();
     this.reset();
     this.showSuccess = false;
-    this.closeHint?.();
   }
 }
 

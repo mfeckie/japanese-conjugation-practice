@@ -6,12 +6,15 @@ import {
   type Verb,
 } from 'japanese-conjugation-practice-ember/japanese-data/verbs';
 import {
-  derivePastTenseForm,
   deriveTeForm,
   form_types,
   getFormTitle,
   teFormExplanation,
 } from 'japanese-conjugation-practice-ember/japanese-data/te-form-rules';
+import {
+  derivePastTenseForm,
+  pastFormExplanation,
+} from 'japanese-conjugation-practice-ember/japanese-data/past-form-rules';
 
 export default class QuizService extends Service {
   @tracked correctAnswers = 0;
@@ -65,7 +68,7 @@ export default class QuizService extends Service {
       case 'te':
         return teFormExplanation(this.currentQuestion);
       case 'past':
-        return `The past form of ${this.currentQuestion.hiragana} is ${this.conjugatedForm}.`;
+        return pastFormExplanation(this.currentQuestion);
       default:
         return '';
     }

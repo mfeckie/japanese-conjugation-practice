@@ -9,6 +9,26 @@ export interface Verb {
   endingGroup?: string; // For godan verbs, indicates the ending group (e.g., 'u', 'ku', 'su', etc.)
 }
 
+export interface TransformationHint {
+  step1: string;
+  step2: string;
+  step3?: string;
+  rule: string;
+  example: string;
+}
+
+export interface FormRule {
+  pattern: string;
+  replacement: string;
+  description: string;
+}
+
+export interface FormRules {
+  ichidan: FormRule;
+  irregular: { [key: string]: FormRule };
+  godan: { [key: string]: FormRule };
+}
+
 export const verbs: Verb[] = [
   // Ichidan verbs
   {

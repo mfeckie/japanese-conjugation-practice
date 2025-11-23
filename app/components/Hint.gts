@@ -1,10 +1,8 @@
+import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { on } from '@ember/modifier';
 import { tracked } from '@glimmer/tracking';
 import { PhInfo, PhLightbulb } from 'ember-phosphor-icons';
-import type Owner from '@ember/owner';
-import type StateService from 'japanese-conjugation-practice-ember/services/state-service';
-import { service } from '@ember/service';
+import type QuizService from 'japanese-conjugation-practice-ember/services/quiz';
 
 interface Signature {
   Args: never;
@@ -12,16 +10,8 @@ interface Signature {
 }
 
 export class Hint extends Component<Signature> {
+  @service declare quiz: QuizService;
   @tracked showHint: boolean = false;
-  @service declare stateService: StateService;
-
-  constructor(owner: Owner, args: Signature['Args']) {
-    super(owner, args);
-
-    this.stateService.closeHint = this.closeModal;
-  }
-
-  showModal = () => {};
 
   closeModal = () => {
     this.showHint = false;
@@ -34,12 +24,14 @@ export class Hint extends Component<Signature> {
     </button>
     <dialog id="hint" class="modal modal-bottom">
       <div class="modal-box">
-        <PhInfo @size="1.5em" class="text-info" />
-        <div class="mt-4 flex justify-center">
-          <span class="text-2xl text-center">
-            {{yield}}
-          </span>
-        </div>
+        <PhInfo @size="1.5em" class="text-info mb-2" />
+        <h3 class="text-lg font-bold">{{this.quiz.hintText.rule}}</h3>
+        <ul class="list">
+          <li class="list-row">{{this.quiz.hintText.step1}}</li>
+          <li class="list-row">{{this.quiz.hintText.step2}}</li>
+          <li class="list-row"><span class="font-bold">Example:</span>
+            {{this.quiz.hintText.example}}</li>
+        </ul>
         <div class="modal-action">
           <form method="dialog">
             <button type="submit" class="btn">Close</button>

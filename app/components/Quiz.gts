@@ -50,9 +50,7 @@ export class Quiz extends Component {
         {{this.quiz.formTitle}}</h4>
 
       <KanaInput @onEnter={{this.handleEnter}} />
-      <Hint>
-        {{this.quiz.hintText}}
-      </Hint>
+      <Hint />
 
     </div>
   </template>
