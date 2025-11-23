@@ -22,6 +22,7 @@
     "types": [
       "ember-source/types",
       "@embroider/core/virtual",
+      "@glint/ember-tsc/types",
       "vite/client"
     ]
   }

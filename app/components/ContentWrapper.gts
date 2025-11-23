@@ -1,7 +1,6 @@
 import type { TemplateOnlyComponent } from '@ember/component/template-only';
 
 interface Signature {
-  Args: {};
   Blocks: {
     body: [];
     title: [];

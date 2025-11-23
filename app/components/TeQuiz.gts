@@ -17,11 +17,11 @@ export class TeQuiz extends Component {
 
   @tracked showHint: boolean = false;
 
-  handleEnter = (value: string) => {
+  handleEnter = async (value: string) => {
     const isCorrect = this.quiz.teForm == value;
 
     if (isCorrect) {
-      this.stateService.correctAnswer();
+      await this.stateService.correctAnswer();
       this.scoreService.incrementCorrect();
       this.scoreService.incrementAnswered();
       this.showHint = false;

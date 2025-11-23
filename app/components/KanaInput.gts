@@ -38,7 +38,7 @@ interface Signature {
 export class KanaInput extends Component<Signature> {
   @service declare stateService: StateService;
 
-  onKeyup = async (event: Event) => {
+  onKeyup = (event: Event) => {
     this.stateService.reset();
     if ((event as KeyboardEvent).key === 'Enter') {
       const input = event.target as HTMLInputElement;
