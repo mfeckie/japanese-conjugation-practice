@@ -54,7 +54,7 @@ export class KanaInput extends Component<Signature> {
   };
 
   <template>
-    <form class="relative" {{on "submit" this.handleSubmit}}>
+    <form class="relative mb-1" {{on "submit" this.handleSubmit}}>
       <label for="answer">
         {{! template-lint-disable no-autofocus-attribute }}
         <input
