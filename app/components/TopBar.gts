@@ -38,6 +38,8 @@ export const TopBar = <template>
               <Link @route="form" @model="past_polite">ました form (past polite)</Link>
               <Link @route="form" @model="negative_polite">ません form (polite
                 negative)</Link>
+              <Link @route="form" @model="past_polite_negative">ませんでした
+                form (past polite negative)</Link>
             </ul>
           </div>
         </nav>
