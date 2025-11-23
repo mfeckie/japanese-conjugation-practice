@@ -6,9 +6,10 @@ import {
   type Verb,
 } from 'japanese-conjugation-practice-ember/japanese-data/verbs';
 import {
+  derivePastTenseForm,
   deriveTeForm,
   form_types,
-} from 'japanese-conjugation-practice-ember/japanese-data/form-rules';
+} from 'japanese-conjugation-practice-ember/japanese-data/te-form-rules';
 
 export default class QuizService extends Service {
   @tracked correctAnswers = 0;
@@ -46,6 +47,8 @@ export default class QuizService extends Service {
     switch (this.formType) {
       case 'te':
         return deriveTeForm(this.currentQuestion);
+      case 'past':
+        return derivePastTenseForm(this.currentQuestion);
     }
   }
 }

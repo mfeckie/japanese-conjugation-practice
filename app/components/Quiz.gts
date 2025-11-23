@@ -9,7 +9,7 @@ import { tracked } from '@glimmer/tracking';
 import {
   getExplanation,
   getFormTitle,
-} from 'japanese-conjugation-practice-ember/japanese-data/form-rules';
+} from 'japanese-conjugation-practice-ember/japanese-data/te-form-rules';
 import { Hint } from './Hint.gts';
 import type ScoreService from 'japanese-conjugation-practice-ember/services/score-service';
 
