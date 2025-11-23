@@ -7,6 +7,7 @@ import type StateService from 'japanese-conjugation-practice-ember/services/stat
 import { service } from '@ember/service';
 
 interface Signature {
+  Args: never;
   Blocks: { default: [] };
 }
 
