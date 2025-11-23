@@ -1,5 +1,12 @@
 import type { Verb } from './verbs';
 
+export const form_types = {
+  te: 'て form',
+  past: 'past form',
+  negative: 'negative form',
+  past_negative: 'past negative form',
+};
+
 export interface FormRule {
   pattern: string;
   replacement: string;

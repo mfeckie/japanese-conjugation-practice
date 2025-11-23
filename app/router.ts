@@ -7,5 +7,5 @@ export default class Router extends EmberRouter {
 }
 
 Router.map(function () {
-  this.route('te-form');
+  this.route('form', { path: '/form/:form_type' });
 });

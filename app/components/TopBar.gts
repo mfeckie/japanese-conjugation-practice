@@ -22,7 +22,7 @@ export const TopBar = <template>
               class="menu-title uppercase tracking-wide text-xs text-base-content/70"
             >Plain</span>
             <ul class="mt-2 space-y-1">
-              <Link @route="te-form">て form</Link>
+              <Link @route="form" @model="te">て form</Link>
               <li><a class="capitalize" href="#">past form</a></li>
               <li><a class="capitalize" href="#">negative</a></li>
               <li><a class="capitalize" href="#">past negative</a></li>
@@ -55,6 +55,7 @@ export const TopBar = <template>
 interface LinkArgs {
   Args: {
     route: string;
+    model?: string;
   };
   Blocks: {
     default: [];
@@ -64,5 +65,6 @@ const Link: TemplateOnlyComponent<LinkArgs> = <template>
   <li><LinkTo
       class="px-4 py-2 rounded"
       @route={{@route}}
+      @model={{@model}}
     >{{yield}}</LinkTo></li>
 </template>;
