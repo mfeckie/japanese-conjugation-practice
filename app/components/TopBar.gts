@@ -52,7 +52,7 @@ export const TopBar = <template>
   </div>
 </template>;
 
-interface Link {
+interface LinkArgs {
   Args: {
     route: string;
   };
@@ -60,7 +60,7 @@ interface Link {
     default: [];
   };
 }
-const Link: TemplateOnlyComponent<Link> = <template>
+const Link: TemplateOnlyComponent<LinkArgs> = <template>
   <li><LinkTo
       class="px-4 py-2 rounded"
       @route={{@route}}
