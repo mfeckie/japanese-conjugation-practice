@@ -23,8 +23,8 @@ export const TopBar = <template>
             >Plain</span>
             <ul class="mt-2 space-y-1">
               <Link @route="form" @model="te">て form</Link>
-              <li><a class="capitalize" href="#">past form</a></li>
-              <li><a class="capitalize" href="#">negative</a></li>
+              <Link @route="form" @model="past">た form (past)</Link>
+              <Link @route="form" @model="negative">ない form (negative)</Link>
               <li><a class="capitalize" href="#">past negative</a></li>
             </ul>
           </div>

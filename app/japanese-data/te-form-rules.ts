@@ -3,7 +3,7 @@ import type { FormRules, TransformationHint, Verb } from './verbs';
 export const form_types = {
   te: 'て form',
   past: 'た form',
-  negative: 'negative form',
+  negative: 'ない form',
   past_negative: 'past negative form',
 };
 

@@ -16,6 +16,10 @@ import {
   derivePastTenseForm,
   pastFormExplanation,
 } from 'japanese-conjugation-practice-ember/japanese-data/past-form-rules';
+import {
+  deriveNegativeForm,
+  negativeFormExplanation,
+} from 'japanese-conjugation-practice-ember/japanese-data/negative-form';
 
 const noHint: TransformationHint = {
   step1: 'No hint available',
@@ -62,6 +66,8 @@ export default class QuizService extends Service {
         return deriveTeForm(this.currentQuestion);
       case 'past':
         return derivePastTenseForm(this.currentQuestion);
+      case 'negative':
+        return deriveNegativeForm(this.currentQuestion);
     }
   }
 
@@ -77,6 +83,8 @@ export default class QuizService extends Service {
         return teFormExplanation(this.currentQuestion);
       case 'past':
         return pastFormExplanation(this.currentQuestion);
+      case 'negative':
+        return negativeFormExplanation(this.currentQuestion);
       default:
         return noHint;
     }
