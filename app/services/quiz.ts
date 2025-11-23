@@ -12,6 +12,7 @@ export default class QuizService extends Service {
   @tracked questionsAnswered = 0;
   @tracked currentQuestion?: Verb;
   @tracked verbs: Verb[] = new TrackedArray();
+  @tracked formType: string = 'te';
 
   get remainingQuestions() {
     return this.verbs.length;
@@ -36,7 +37,7 @@ export default class QuizService extends Service {
     this.currentQuestion = this.verbs.pop();
   }
 
-  get teForm() {
+  get conjugatedForm() {
     if (!this.currentQuestion) return;
     return deriveTeForm(this.currentQuestion);
   }

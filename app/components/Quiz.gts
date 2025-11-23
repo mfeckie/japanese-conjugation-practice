@@ -18,7 +18,7 @@ export class Quiz extends Component {
   @tracked showHint: boolean = false;
 
   handleEnter = async (value: string) => {
-    const isCorrect = this.quiz.teForm == value;
+    const isCorrect = this.quiz.conjugatedForm == value;
 
     if (isCorrect) {
       await this.stateService.correctAnswer();
