@@ -6,7 +6,10 @@ import PhInfo from 'ember-phosphor-icons/components/ph-info';
 import { KanaInput } from './KanaInput.gts';
 import type { StateService } from 'japanese-conjugation-practice-ember/services/state-service';
 import { tracked } from '@glimmer/tracking';
-import { getExplanation } from 'japanese-conjugation-practice-ember/japanese-data/form-rules';
+import {
+  getExplanation,
+  getFormTitle,
+} from 'japanese-conjugation-practice-ember/japanese-data/form-rules';
 import { Hint } from './Hint.gts';
 import type ScoreService from 'japanese-conjugation-practice-ember/services/score-service';
 
@@ -46,7 +49,8 @@ export class Quiz extends Component {
         {{this.quiz.currentQuestion.meaning}}
       </h4>
       <div class="divider"></div>
-      <h4 class="text-3xl">Convert to て form</h4>
+      <h4 class="text-3xl mb-3">Convert to
+        {{getFormTitle this.quiz.formType}}</h4>
 
       <KanaInput @onEnter={{this.handleEnter}} />
       <Hint>

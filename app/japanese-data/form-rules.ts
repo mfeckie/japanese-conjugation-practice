@@ -7,6 +7,10 @@ export const form_types = {
   past_negative: 'past negative form',
 };
 
+export function getFormTitle(form_type: keyof typeof form_types): string {
+  return form_types[form_type];
+}
+
 export interface FormRule {
   pattern: string;
   replacement: string;
