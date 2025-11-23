@@ -8,7 +8,7 @@ import {
 } from 'japanese-conjugation-practice-ember/japanese-data/verbs';
 import {
   deriveTeForm,
-  form_types,
+  FormTypes,
   getFormTitle,
   teFormExplanation,
 } from 'japanese-conjugation-practice-ember/japanese-data/te-form-rules';
@@ -24,6 +24,10 @@ import {
   derivePastNegativeForm,
   pastNegativeFormExplanation,
 } from 'japanese-conjugation-practice-ember/japanese-data/past-negative-form';
+import {
+  derivePoliteForm,
+  politeFormExplanation,
+} from 'japanese-conjugation-practice-ember/japanese-data/polite-form';
 
 const noHint: TransformationHint = {
   step1: 'No hint available',
@@ -37,7 +41,7 @@ export default class QuizService extends Service {
   @tracked questionsAnswered = 0;
   @tracked currentQuestion?: Verb;
   @tracked verbs: Verb[] = new TrackedArray();
-  @tracked formType: keyof typeof form_types = 'te';
+  @tracked formType: keyof typeof FormTypes = 'te';
 
   get remainingQuestions() {
     return this.verbs.length;
@@ -74,6 +78,8 @@ export default class QuizService extends Service {
         return deriveNegativeForm(this.currentQuestion);
       case 'past_negative':
         return derivePastNegativeForm(this.currentQuestion);
+      case 'polite':
+        return derivePoliteForm(this.currentQuestion);
     }
   }
 
@@ -93,6 +99,8 @@ export default class QuizService extends Service {
         return negativeFormExplanation(this.currentQuestion);
       case 'past_negative':
         return pastNegativeFormExplanation(this.currentQuestion);
+      case 'polite':
+        return politeFormExplanation(this.currentQuestion);
       default:
         return noHint;
     }

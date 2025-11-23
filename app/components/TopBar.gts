@@ -34,6 +34,7 @@ export const TopBar = <template>
               class="menu-title uppercase tracking-wide text-xs text-base-content/70"
             >Polite</span>
             <ul class="mt-2 space-y-1">
+              <Link @route="form" @model="polite">ます form (polite)</Link>
               <li><a class="capitalize" href="#">polite</a></li>
               <li><a class="capitalize" href="#">past</a></li>
               <li><a class="capitalize" href="#">negative</a></li>

@@ -1,14 +1,15 @@
 import type { FormRules, TransformationHint, Verb } from './verbs';
 
-export const form_types = {
+export const FormTypes = {
   te: 'て form',
   past: 'た form',
   negative: 'ない form',
   past_negative: 'なかった form',
+  polite: 'ます form',
 };
 
-export function getFormTitle(form_type: keyof typeof form_types): string {
-  return form_types[form_type];
+export function getFormTitle(form_type: keyof typeof FormTypes): string {
+  return FormTypes[form_type];
 }
 
 export function deriveTeForm(verb: Verb): string {
