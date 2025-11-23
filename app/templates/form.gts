@@ -1,6 +1,6 @@
 import type { TemplateOnlyComponent } from '@ember/component/template-only';
 import { ContentWrapper } from 'japanese-conjugation-practice-ember/components/ContentWrapper.gts';
-import { TeQuiz } from 'japanese-conjugation-practice-ember/components/TeQuiz.gts';
+import { Quiz } from 'japanese-conjugation-practice-ember/components/Quiz.gts';
 
 interface Signature {
   Args: {
@@ -15,7 +15,7 @@ const page: TemplateOnlyComponent<Signature> = <template>
   <ContentWrapper>
     <:title>{{@model.form_title}}</:title>
     <:body>
-      <TeQuiz />
+      <Quiz />
     </:body>
   </ContentWrapper>
 </template>;

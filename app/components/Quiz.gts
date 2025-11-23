@@ -10,7 +10,7 @@ import { getExplanation } from 'japanese-conjugation-practice-ember/japanese-dat
 import { Hint } from './Hint.gts';
 import type ScoreService from 'japanese-conjugation-practice-ember/services/score-service';
 
-export class TeQuiz extends Component {
+export class Quiz extends Component {
   @service declare quiz: QuizService;
   @service declare stateService: StateService;
   @service declare scoreService: ScoreService;
