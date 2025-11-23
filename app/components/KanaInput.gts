@@ -42,6 +42,9 @@ export class KanaInput extends Component<Signature> {
     this.stateService.reset();
     if ((event as KeyboardEvent).key === 'Enter') {
       const input = event.target as HTMLInputElement;
+      if (input.value.trim() === '') {
+        return;
+      }
       this.args.onEnter(input.value);
     }
   };
