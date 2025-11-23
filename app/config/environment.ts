@@ -1,7 +1,9 @@
 import loadConfigFromMeta from '@embroider/config-meta-loader';
 import { assert } from '@ember/debug';
 
-const config = loadConfigFromMeta('japanese-conjugation-practice-ember') as unknown;
+const config = loadConfigFromMeta(
+  'japanese-conjugation-practice-ember'
+) as unknown;
 
 assert(
   'config is not an object',
