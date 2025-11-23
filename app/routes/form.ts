@@ -10,6 +10,7 @@ export default class FormRoute extends Route {
   }
 
   model(params: { form_type: keyof typeof form_types }) {
+    this.quiz.formType = params.form_type;
     return {
       form_title: form_types[params.form_type],
     };
