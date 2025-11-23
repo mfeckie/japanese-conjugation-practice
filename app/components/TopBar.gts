@@ -25,7 +25,8 @@ export const TopBar = <template>
               <Link @route="form" @model="te">て form</Link>
               <Link @route="form" @model="past">た form (past)</Link>
               <Link @route="form" @model="negative">ない form (negative)</Link>
-              <li><a class="capitalize" href="#">past negative</a></li>
+              <Link @route="form" @model="past_negative">なかった form (past
+                negative)</Link>
             </ul>
           </div>
           <div>
