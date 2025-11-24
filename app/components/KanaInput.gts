@@ -6,6 +6,9 @@ import type { StateService } from 'japanese-conjugation-practice-ember/services/
 import { on } from '@ember/modifier';
 import { PhCheckFat } from 'ember-phosphor-icons';
 
+export const inputClass: string =
+  'input input-bordered input-lg w-full text-center text-3xl';
+
 type InputEvent = (event: Event) => void;
 
 const wanakanaModifier = modifier(
@@ -60,7 +63,7 @@ export class KanaInput extends Component<Signature> {
         <input
           id="answer"
           name="answer"
-          class="input input-bordered input-lg w-full max-w-xs text-center text-2xl"
+          class={{inputClass}}
           type="text"
           autofocus
           autocomplete="off"

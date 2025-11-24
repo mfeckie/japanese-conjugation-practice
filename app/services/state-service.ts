@@ -2,6 +2,7 @@ import Service from '@ember/service';
 import type QuizService from './quiz';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
+import { inputClass } from 'japanese-conjugation-practice-ember/components/KanaInput.gts';
 
 export class StateService extends Service {
   @service declare quiz: QuizService;
@@ -15,8 +16,7 @@ export class StateService extends Service {
   }
   reset() {
     if (!this.input) return;
-    this.input.className =
-      'input input-bordered input-lg w-full max-w-xs text-center text-3xl';
+    this.input.className = inputClass;
   }
   async correctAnswer() {
     if (!this.input) return;
