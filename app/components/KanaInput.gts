@@ -4,7 +4,7 @@ import { modifier } from 'ember-modifier';
 import { service } from '@ember/service';
 import type { StateService } from 'japanese-conjugation-practice-ember/services/state-service';
 import { on } from '@ember/modifier';
-import { PhCheckFat } from 'ember-phosphor-icons';
+import PhCheckFat from 'ember-phosphor-icons/components/ph-check-fat';
 
 export const inputClass: string =
   'input input-bordered input-lg w-full text-center text-3xl';

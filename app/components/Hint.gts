@@ -1,7 +1,8 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { PhInfo, PhLightbulb } from 'ember-phosphor-icons';
+import PhInfo from 'ember-phosphor-icons/components/ph-info';
+import PhLightbulb from 'ember-phosphor-icons/components/ph-lightbulb';
 import type QuizService from 'japanese-conjugation-practice-ember/services/quiz';
 
 interface Signature {

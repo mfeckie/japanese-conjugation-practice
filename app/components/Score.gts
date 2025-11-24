@@ -1,11 +1,9 @@
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import {
-  PhArrowBendDownLeft,
-  PhCheckCircle,
-  PhXCircle,
-} from 'ember-phosphor-icons';
+import PhArrowBendDownLeft from 'ember-phosphor-icons/components/ph-arrow-bend-down-left';
+import PhCheckCircle from 'ember-phosphor-icons/components/ph-check-circle';
+import PhXCircle from 'ember-phosphor-icons/components/ph-x-circle';
 import type QuizService from 'japanese-conjugation-practice-ember/services/quiz';
 import type ScoreService from 'japanese-conjugation-practice-ember/services/score-service';
 
